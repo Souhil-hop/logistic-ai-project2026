@@ -1,116 +1,74 @@
 import streamlit as st
 
-# 1. إعداد الصفحة بالعرض الواسع المتجاوب
-st.set_page_config(page_title="المتنبيء اللوجستي - سهيل", layout="wide")
+# 1. إعداد الصفحة
+st.set_page_config(page_title="منصة سهيل اللوجستية الاحترافية", layout="wide")
 
-# 2. التنسيق الفخم (أسود وذهبي)
+# 2. التنسيق (أسود وذهبي)
 st.markdown("""
     <style>
     .main { background-color: #0d1117; color: #d4af37; }
-    .stButton>button { 
-        background-color: #d4af37; 
-        color: black; 
-        width: 100%; 
-        font-weight: bold; 
-        border-radius: 8px; 
-        border: none; 
-        height: 50px; 
-    }
-    label { color: #d4af37 !important; font-size: 16px; }
-    h1 { color: #d4af37; text-align: center; border-bottom: 2px solid #d4af37; padding-bottom: 10px; }
-    .university-header {
-        text-align: center;
-        color: #d4af37;
-        font-weight: bold;
-        font-size: 18px;
-        letter-spacing: 1px;
-        margin-bottom: 10px;
-    }
-    .footer { 
-        position: fixed; 
-        left: 0; 
-        bottom: 0; 
-        width: 100%; 
-        background-color: #0d1117; 
-        color: #d4af37; 
-        text-align: center; 
-        padding: 10px; 
-        font-style: italic; 
-        border-top: 1px solid #d4af37; 
-    }
-    /* تنسيق صندوق التقييم */
-    .feedback-box {
-        background-color: rgba(212, 175, 55, 0.1);
-        border: 1px dashed #d4af37;
-        padding: 15px;
-        border-radius: 10px;
-        margin-top: 20px;
-        text-align: center;
-    }
+    .stButton>button { background-color: #d4af37; color: black; font-weight: bold; border-radius: 8px; width: 100%; height: 50px; }
+    .university-header { text-align: center; color: #d4af37; font-weight: bold; font-size: 18px; margin-bottom: 10px; }
+    .incoterm-box { background-color: #161b22; padding: 10px; border-radius: 5px; border-left: 4px solid #d4af37; margin-bottom: 15px; }
+    .footer { position: fixed; left: 0; bottom: 0; width: 100%; background-color: #0d1117; color: #d4af37; text-align: center; padding: 10px; border-top: 1px solid #d4af37; }
     </style>
     """, unsafe_allow_html=True)
 
-# 3. الهيدر (برعاية الجامعة)
-st.markdown("<div class='university-header'>🎓 برعاية جامعة محمد خيضر - بسكرة</div>", unsafe_allow_html=True)
-
-# 4. العنوان واسم المطور
-st.title("🚚 نظام التنبؤ اللوجستي الذكي")
+# 3. الهيدر الرسمي
+st.markdown("<div class='university-header'>🎓 برعاية جامعة محمد خيضر - بسكرة | كلية العلوم الاقتصادية والتجارية</div>", unsafe_allow_html=True)
+st.title("📦 نظام التنبؤ بتكاليف النقل الدولي والخدمات اللوجستية")
 st.markdown("<h3 style='text-align: center; color: #d4af37;'>بإشراف وتطوير الطالب: سهيل</h3>", unsafe_allow_html=True)
 st.write("---")
 
-# 5. المدخلات
+# 4. واجهة المدخلات الاحترافية
 with st.container():
-    st.markdown("### 📍 تفاصيل المسار وبيانات التشغيل")
-    c1, c2 = st.columns(2)
-    with c1:
-        start_p = st.text_input("نقطة الانطلاق", value="بسكرة")
-        dist = st.number_input("المسافة التقريبية (كم)", min_value=1.0, value=400.0)
-    with c2:
-        end_p = st.text_input("نقطة الوصول", value="الجزائر العاصمة")
-        wght = st.number_input("وزن الحمولة (طن)", min_value=0.1, value=1.0)
-
-    truck_type = st.selectbox("نوع الشاحنة المستخدمة", 
-                             ["شاحنة صغيرة (Caddy/Partner)", "شاحنة متوسطة (Moyen tonnage)", 
-                              "شاحنة مقطورة (Semi-remorque)", "شاحنة تبريد (Frigo)"])
-
-    fuel_price = st.slider("سعر الوقود الحالي (د.ج/لتر)", 20.0, 50.0, 29.1)
-
-    # 6. زر التنبؤ والنتيجة
-    if st.button("بدء تحليل البيانات اللوجستية"):
-        # الحسابات
-        t_weight = {"شاحنة صغيرة (Caddy/Partner)": 1.0, "شاحنة متوسطة (Moyen tonnage)": 1.4, 
-                    "شاحنة مقطورة (Semi-remorque)": 2.2, "شاحنة تبريد (Frigo)": 2.8}
+    col_a, col_b = st.columns(2)
+    
+    with col_a:
+        st.markdown("### 📍 تفاصيل الشحنة")
+        start_p = st.text_input("نقطة الانطلاق (Origin)", value="بسكرة")
+        end_p = st.text_input("نقطة الوصول (Destination)", value="ميناء الجزائر")
+        incoterm = st.selectbox("قاعدة التجارة الدولية (Incoterms 2020)", 
+                               ["EXW - تسليم المصنع", "FOB - تسليم على ظهر السفينة", "CIF - التكلفة والتأمين والشحن"])
         
-        fuel_impact = (dist / 5) * fuel_price
-        prediction = ((dist * 0.6) + (wght * 250)) * t_weight[truck_type] + fuel_impact + 1500
-        
-        # عرض النتيجة
-        st.markdown(f"""
-            <div style="background-color: #d4af37; padding: 25px; border-radius: 15px; text-align: center; border: 2px solid white; max-width: 600px; margin: 20px auto;">
-                <h2 style="color: black; margin: 0;">💰 التكلفة التقديرية</h2>
-                <p style="color: black; font-size: 38px; font-weight: bold; margin: 10px 0;">
-                    {prediction:,.2f} <span style="font-size: 20px;">د.ج</span>
-                </p>
-                <p style="color: #333; font-size: 16px; margin: 0; font-weight: bold;">المسار: من {start_p} إلى {end_p}</p>
-            </div>
-        """, unsafe_allow_html=True)
-        
-        st.balloons()
+    with col_b:
+        st.markdown("### 🚛 معطيات النقل")
+        dist = st.number_input("المسافة الإجمالية (كم)", value=400.0)
+        wght = st.number_input("الوزن القائم (Gross Weight) - طن", value=1.0)
+        truck = st.selectbox("أسطول النقل", ["شاحنة صغيرة", "شاحنة متوسطة", "مقطورة دولية", "تبريد"])
 
-        # --- إضافة خانة التقييم الجديدة ---
-        st.markdown("---")
-        st.markdown("<div class='feedback-box'>", unsafe_allow_html=True)
-        st.write("🧪 **تقييم دقة التنبؤ بالذكاء الاصطناعي**")
-        st.write("بناءً على خبرتك، هل تجد هذا السعر قريباً من الواقع؟")
-        
-        col_f1, col_f2 = st.columns(2)
-        with col_f1:
-            if st.button("✅ نعم، التنبؤ دقيق"):
-                st.success("شكراً لك! سيتم استخدام هذا التأكيد لتحسين وزن المعطيات مستقبلاً.")
-        with col_f2:
-            if st.button("❌ لا، يحتاج تعديل"):
-                st.warning("شكراً لملاحظتك. سيتم مراجعة 'الأوزان' (Weights) لتناسب تقلبات السوق.")
-        st.markdown("</div>", unsafe_allow_html=True)
+# 5. زر التحليل والنتائج
+if st.button("بدء التحليل اللوجستي المعمق"):
+    # حسابات تفصيلية
+    t_map = {"شاحنة صغيرة": 1.0, "شاحنة متوسطة": 1.4, "مقطورة دولية": 2.2, "تبريد": 2.8}
+    base_cost = ((dist * 0.6) + (wght * 250)) * t_map[truck]
+    fuel_cost = (dist / 5) * 29.1
+    maintenance = base_cost * 0.15
+    profit_margin = (base_cost + fuel_cost + maintenance) * 0.20
+    
+    total_dzd = base_cost + fuel_cost + maintenance + profit_margin + 1500
+    total_eur = total_dzd / 225  # سعر صرف تقريبي
+    
+    # عرض النتائج
+    st.markdown(f"""
+        <div style="background-color: #d4af37; padding: 25px; border-radius: 15px; text-align: center; color: black; margin-bottom: 20px;">
+            <h2>💰 التكلفة التقديرية الإجمالية</h2>
+            <h1 style="margin:0;">{total_dzd:,.2f} د.ج</h1>
+            <h3>≈ {total_eur:,.2f} EUR</h3>
+        </div>
+    """, unsafe_allow_html=True)
 
-# 7. الفوتر
-st.markdown(f'<div class="footer">المشروع التطبيقي للطالب: سهيل - جميع الحقوق محفوظة لولاية بسكرة 2026</div>', unsafe_allow_html=True)
+    # جدول تفصيل التكاليف لطلبة اللوجستيك
+    st.markdown("### 📋 تفصيل التكاليف (Cost Breakdown)")
+    st.table({
+        "البند": ["تكلفة الوقود", "الصيانة والاهتلاك", "أجرة المسار الأساسية", "هامش الربح (20%)"],
+        "القيمة (د.ج)": [f"{fuel_cost:,.2f}", f"{maintenance:,.2f}", f"{base_cost:,.2f}", f"{profit_margin:,.2f}"]
+    })
+
+    # رسالة تعليمية حول الـ Incoterms
+    st.markdown(f"<div class='incoterm-box'><b>ملاحظة لوجستية:</b> تم حساب التكلفة بناءً على قاعدة <b>{incoterm}</b>. يرجى التأكد من توزيع مسؤولية التأمين والرسوم الجمركية وفقاً للعقد.</div>", unsafe_allow_html=True)
+    
+    st.balloons()
+
+# 6. الفوتر
+st.markdown(f'<div class="footer">مشروع التخرج: سهيل - تخصص اللوجستيك والنقل الدولي - 2026</div>', unsafe_allow_html=True)
