@@ -27,28 +27,51 @@ wilayas_names = [
     "56. جانت", "57. المغير", "58. المنيعة"
 ]
 
-# --- كود CSS الشامل للحفاظ على الهوية البصرية والوضوح ---
+# --- كود CSS المحدث: تأثير التلاشي الكلاسيكي وتحسين الوضوح ---
 st.markdown("""
     <style>
+    /* تأثير التلاشي الكلاسيكي عند تحميل أي عنصر */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .stApp, .main-card, .stTable, .recommendation-box {
+        animation: fadeIn 0.8s ease-out;
+    }
+
     * { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+    
+    /* لون الخط الأبيض الكبير للوضوح */
+    .stApp, .stMarkdown, p, label { 
+        color: #FFFFFF !important; 
+        font-size: 19px !important; 
+        font-weight: 500 !important;
+    }
+    
+    h1, h2, h3 { color: #d4af37 !important; }
+
     .stTable { 
-        background-color: rgba(0, 0, 0, 0.75) !important; 
-        border: 1px solid #d4af37 !important;
+        background-color: rgba(0, 0, 0, 0.8) !important; 
+        border: 2px solid #d4af37 !important;
         border-radius: 12px;
     }
-    th { color: #d4af37 !important; background-color: rgba(0,0,0,0.9) !important; font-size: 18px !important; text-align: center !important; }
-    td { color: #ffffff !important; font-size: 16px !important; text-align: center !important; border-bottom: 1px solid rgba(212, 175, 55, 0.2) !important; }
+    th { color: #d4af37 !important; background-color: rgba(0,0,0,0.9) !important; font-size: 20px !important; }
+    td { color: #ffffff !important; font-size: 18px !important; }
+
     .recommendation-box {
-        background-color: rgba(212, 175, 55, 0.25);
+        background-color: rgba(212, 175, 55, 0.3);
         border: 2px solid #d4af37;
-        padding: 20px; border-radius: 15px; color: #ffffff;
-        font-weight: bold; text-align: center; backdrop-filter: blur(8px); margin: 20px 0;
+        padding: 25px; border-radius: 15px; color: #ffffff;
+        font-weight: bold; text-align: center; backdrop-filter: blur(10px); margin: 20px 0;
+        font-size: 20px !important;
     }
+    
     .main-card {
-        background: rgba(13, 17, 23, 0.75); padding: 25px; border-radius: 15px;
+        background: rgba(0, 0, 0, 0.7); padding: 25px; border-radius: 15px;
         border-right: 5px solid #d4af37; margin-bottom: 20px;
     }
-    label { color: #d4af37 !important; font-weight: bold !important; }
+
+    div[data-testid="stVerticalBlock"] > div { background: transparent !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -57,29 +80,29 @@ if st.session_state.page == 'welcome':
     st.markdown("""
         <style>
         .stApp {
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
                         url("https://images.unsplash.com/photo-1524522173746-f628baad3644?q=80&w=1500");
             background-size: cover; background-position: center;
         }
         </style>
     """, unsafe_allow_html=True)
     
-    st.markdown('<div style="text-align:center; margin-top:50px; padding:40px; background:rgba(0,0,0,0.6); border:3px solid #d4af37; border-radius:30px;"><h1 style="color:#d4af37; font-size:40px;">أهلاً بطلبة تخصص اللوجستيك والنقل الدولي 🎓</h1><h2 style="color:white;">تحت إشراف جامعة محمد خيضر بسكرة</h2><h3 style="color:#e0e0e0;">إعداد الطالب: سهيل عطالي</h3></div>', unsafe_allow_html=True)
+    st.markdown('<div style="text-align:center; margin-top:50px; padding:40px; background:rgba(0,0,0,0.7); border:3px solid #d4af37; border-radius:30px;"><h1 style="color:#d4af37; font-size:45px;">أهلاً بطلبة تخصص اللوجستيك والنقل الدولي 🎓</h1><h2 style="color:white;">تحت إشراف جامعة محمد خيضر بسكرة</h2><h3 style="color:#e0e0e0;">إعداد الطالب: سهيل عطالي</h3></div>', unsafe_allow_html=True)
     
     st.markdown("""
-        <div style="background:rgba(0,0,0,0.7); padding:20px; border-radius:15px; color:white; text-align:center; margin-top:20px; border:1px solid #d4af37;">
-        <p style="font-size:18px;">مرحباً بكم في منصتنا الذكية. هذا النظام عبارة عن مشروع محاكاة لشبكة عصبية باستخدام لغة البايثون (Python) تم تطويره خصيصاً للتنبؤ بتكاليف النقل اللوجستي بدقة عالية، مما يدعم اتخاذ القرارات الاستراتيجية في 58 ولاية جزائرية.</p>
+        <div style="background:rgba(0,0,0,0.8); padding:25px; border-radius:15px; color:white; text-align:center; margin-top:20px; border:1px solid #d4af37;">
+        <p style="font-size:20px;">مشروع بناء نموذج شبكة عصبية باستخدام Keras للتنبؤ بتكاليف النقل اللوجستي عبر 58 ولاية جزائرية بدقة عالية واحترافية.</p>
         </div>
     """, unsafe_allow_html=True)
     
     if st.button("🚀 الدخول إلى منصة التنبؤ الذكية"):
-        st.balloons()
+        # تم إزالة البالونات هنا
         go_to_main()
         st.rerun()
 
 # --- الصفحة الثانية: منصة التحليل ---
 elif st.session_state.page == 'main':
-    st.markdown("""<style>.stApp { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1500"); background-size: cover; }</style>""", unsafe_allow_html=True)
+    st.markdown("""<style>.stApp { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url("https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1500"); background-size: cover; }</style>""", unsafe_allow_html=True)
     
     col_back, col_title = st.columns([1, 5])
     with col_back:
@@ -99,13 +122,14 @@ elif st.session_state.page == 'main':
         with c2:
             st.markdown("<div class='main-card'>", unsafe_allow_html=True)
             st.markdown("### 💰 المعطيات المالية والتقنية")
+            cargo_type = st.text_input("📦 نوع البضاعة المشحونة", "مواد غذائية / تجهيزات صناعية")
             wght = st.number_input("⚖️ الوزن الإجمالي (كغ)", value=3000.0)
             fuel = st.number_input("⛽ سعر الوقود الحالي (د.ج/لتر)", value=29.10)
             truck_type = st.selectbox("🚛 نوع الشاحنة المطلوبة", ["صغيرة", "متوسطة", "مقطورة دولية", "تبريد"])
             st.markdown("</div>", unsafe_allow_html=True)
 
     if st.button("💎 حساب التكلفة النهائية وتوليد التقارير"):
-        st.balloons()
+        # تم إزالة البالونات هنا
         
         truck_specs = {
             "صغيرة": {"cap": 1500, "factor": 1.0},
@@ -123,14 +147,14 @@ elif st.session_state.page == 'main':
 
         st.markdown(f"""
             <div style="background: linear-gradient(45deg, #d4af37, #f4cf67); padding: 25px; border-radius: 20px; text-align: center; color: black; margin-bottom: 25px;">
-                <h2 style="margin:0;">التكلفة التقديرية (للخيار المختار: {truck_type})</h2>
-                <h1 style="font-size: 50px; margin:5px; font-family: sans-serif;">{total_manual:,.2f} د.ج</h1>
+                <h3 style="margin:0; color: black;">التكلفة التقديرية لنقل بضاعة: ({cargo_type})</h3>
+                <h1 style="font-size: 55px; margin:5px; font-family: sans-serif; color: black;">{total_manual:,.2f} د.ج</h1>
             </div>
         """, unsafe_allow_html=True)
 
-        st.markdown("### 📋 هيكلة تكاليف الخيار المختار")
+        st.markdown(f"### 📋 تقرير تفصيلي لنقل بضاعة من نوع: **{cargo_type}**")
         st.table(pd.DataFrame({
-            "بند التكلفة": ["⛽ تكلفة الوقود", "🔧 الصيانة والإهلاك", "🏗️ التشغيل والمسار", "📈 هامش الربح"],
+            "بند التكلفة": ["⛽ تكلفة الوقود", "🔧 الصيانة والإهلاك", "🏗️ التشغيل والمسار", "📈 هامش الربح المتوقع"],
             "القيمة (د.ج)": [f"{fuel_manual:,.2f}", f"{maint_manual:,.2f}", f"{base_manual:,.2f}", f"{profit_manual:,.2f}"]
         }))
 
@@ -144,48 +168,45 @@ elif st.session_state.page == 'main':
 
             analysis_note = ""
             if wght > spec["cap"]:
-                analysis_note = "❌ حمولة أكبر من الشاحنة"
+                analysis_note = "❌ حمولة زائدة"
             else:
                 valid_options[name] = total_calc
                 if wght < (spec["cap"] * 0.4):
-                    analysis_note = "⚠️ مساحة فارغة (تكاليف ضائعة)"
+                    analysis_note = "⚠️ هدر في المساحة"
                 else:
-                    analysis_note = "✅ خيار متاح"
+                    analysis_note = "✅ كفاءة مثالية"
 
             comparison_results.append({
                 "نوع الشاحنة": name,
-                "الحالة": analysis_note,
-                "التكلفة الكلية (د.ج)": f"{total_calc:,.2f}"
+                "التحليل الفني": analysis_note,
+                "التكلفة المتوقعة (د.ج)": f"{total_calc:,.2f}"
             })
 
         if valid_options:
             best_truck_name = min(valid_options, key=valid_options.get)
             for row in comparison_results:
                 if row["نوع الشاحنة"] == best_truck_name:
-                    row["الحالة"] = "⭐ الخيار الأفضل"
-                elif row["الحالة"] == "✅ خيار متاح":
-                    row["الحالة"] = "🔄 خيار بديل"
+                    row["التحليل الفني"] = "⭐ الخيار الأوفر"
 
-        st.markdown("### 🔄 جدول المقارنة وتحليل كفاءة التحميل السعري")
+        st.markdown("### 🔄 تحليل سيناريوهات النقل المتاحة")
         st.table(pd.DataFrame(comparison_results))
 
         st.markdown(f"""
             <div class="recommendation-box">
-                💡 توصية النظام: الخيار الحالي ({truck_type}) تم تقييمه بناءً على مدخلاتك. 
-                بينما التحليل الشامل يشير إلى أن ({best_truck_name}) قد يكون الخيار الأكفأ اقتصادياً.
+                💡 التوصية اللوجستية لنقل ({cargo_type}): بناءً على المعطيات الاقتصادية الحالية، 
+                فإن الخيار ({best_truck_name}) هو الأنسب لضمان أقل تكلفة وأعلى كفاءة في المسار.
             </div>
         """, unsafe_allow_html=True)
 
-        # --- قسم التقييم الجديد ---
         st.write("---")
         st.markdown("### 🧪 تقييم دقة النموذج")
         col_eval1, col_eval2 = st.columns([2, 1])
         with col_eval1:
-            eval_score = st.radio("هل النتيجة دقيقة ومنطقية من وجهة نظرك؟", 
-                                 ("نعم، دقيقة جداً ✅", "تحتاج إلى تعديل بسيط ⚠️", "غير دقيقة ❌"), 
+            eval_score = st.radio("هل النتائج تعكس الواقع الميداني؟", 
+                                 ("نعم، دقيقة جداً ✅", "تحتاج معايرة طفيفة ⚠️", "غير دقيقة ❌"), 
                                  horizontal=True)
         with col_eval2:
-            if st.button("إرسال التقييم 📩"):
-                st.success("شكراً على ملاحظتك يا سهيل! تم تسجيل التقييم.")
+            if st.button("حفظ التقييم 📩"):
+                st.success("تم تسجيل ملاحظتك لتطوير أوزان الشبكة العصبية.")
 
     st.markdown("<p style='text-align:center; color:#d4af37; font-weight:bold; margin-top:40px;'>مشروع التخرج: سهيل عطالي - جامعة محمد خيضر بسكرة 2026</p>", unsafe_allow_html=True)
