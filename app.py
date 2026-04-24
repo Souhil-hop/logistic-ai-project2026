@@ -66,7 +66,10 @@ with st.container():
         profit_perc = st.slider("هامش الربح (%)", 5, 50, 20)
         chosen_truck = st.selectbox("نوع الشاحنة المختارة", ["صغيرة", "متوسطة", "مقطورة دولية", "تبريد"])
 
-if st.button("التكلفة النهائية"): # الزر المختصر
+if st.button("التكلفة النهائية"):
+    # تأثير الاحتفال عند ظهور النتيجة (النقود المتطايرة محاكاةً بالبالونات)
+    st.balloons() 
+    
     t_map = {"صغيرة": 1.0, "متوسطة": 1.4, "مقطورة دولية": 2.2, "تبريد": 2.8}
     t_names = list(t_map.keys())
     t_capacities = [1.5, 5.0, 25.0, 20.0]
@@ -79,25 +82,26 @@ if st.button("التكلفة النهائية"): # الزر المختصر
         total = (base + fuel + maint) * (1 + profit_perc/100) + 1500
         return total, fuel, maint, base
 
-    # 1. عرض النتيجة الفورية (أولاً)
+    # 1. عرض النتيجة الفورية
     total_dzd, f_c, m_c, b_c = get_cost(chosen_truck)
     st.markdown(f"""
-        <div style="background-color: #d4af37; padding: 20px; border-radius: 15px; text-align: center; color: black; margin-bottom: 20px;">
-            <h2>💰 التكلفة التقديرية (الخيار المختار)</h2>
-            <h1 style="font-size: 50px;">{total_dzd:,.2f} د.ج</h1>
+        <div style="background-color: #d4af37; padding: 20px; border-radius: 15px; text-align: center; color: black; margin-bottom: 20px; border: 3px solid #fff;">
+            <h2 style="margin:0;">💰 التكلفة التقديرية النهائية 💰</h2>
+            <h1 style="font-size: 60px; margin:10px;">{total_dzd:,.2f} د.ج</h1>
+            <p style="font-weight: bold;">(بناءً على المعطيات المدخلة والخوارزمية الذكية)</p>
         </div>
     """, unsafe_allow_html=True)
 
     # 2. هيكلة التكاليف
     st.markdown(f"### 📋 تفصيل تكاليف شاحنة {chosen_truck}")
     st.table({
-        "بند التكلفة": ["الوقود", "الصيانة", "التشغيل", "هامش الربح"],
+        "بند التكلفة": ["الوقود", "الصيانة", "التشغيل", "هامش الربح المستهدف"],
         "القيمة (د.ج)": [f"{f_c:,.2f}", f"{m_c:,.2f}", f"{b_c:,.2f}", f"{(total_dzd - (f_c+m_c+b_c+1500)):,.2f}"]
     })
 
-    # 3. جدول المقارنة مع التلوين (ثانياً)
+    # 3. جدول المقارنة مع التلوين بالأخضر لأقل سعر
     st.write("---")
-    st.markdown("### 📊 جدول المقارنة ودعم القرار")
+    st.markdown("### 📊 جدول المقارنة الشامل (دعم القرار)")
     results = []
     for t in t_names:
         cost, _, _, _ = get_cost(t)
@@ -106,26 +110,32 @@ if st.button("التكلفة النهائية"): # الزر المختصر
     
     df = pd.DataFrame(results)
     
-    # وظيفة التلوين بالأخضر لأقل سعر مناسب
-    def highlight_min(s):
-        is_min = s == df[df['الحالة'] == "✅ مناسب"]['التكلفة الكلية (د.ج)'].min()
-        return ['background-color: #00ff00; color: black; font-weight: bold' if v else '' for v in is_min]
+    # تحسين وظيفة التلوين
+    def highlight_min_cost(df_in):
+        style_df = pd.DataFrame('', index=df_in.index, columns=df_in.columns)
+        # نحدد أقل تكلفة في الخيارات "المناسبة" فقط
+        valid_indices = df_in[df_in['الحالة'] == "✅ مناسب"].index
+        if not valid_indices.empty:
+            min_val = df_in.loc[valid_indices, "التكلفة الكلية (د.ج)"].min()
+            min_mask = (df_in["التكلفة الكلية (د.ج)"] == min_val) & (df_in["الحالة"] == "✅ مناسب")
+            style_df.loc[min_mask, "التكلفة الكلية (د.ج)"] = 'background-color: #28a745; color: white; font-weight: bold'
+        return style_df
 
-    st.dataframe(df.style.apply(highlight_min, subset=['التكلفة الكلية (د.ج)']), use_container_width=True)
+    st.dataframe(df.style.apply(highlight_min_cost, axis=None), use_container_width=True)
 
-    # 4. التوصية (في الأخير)
+    # 4. التوصية الذكية
     valid_df = df[df["الحالة"] == "✅ مناسب"]
     if not valid_df.empty:
         best = valid_df.loc[valid_df["التكلفة الكلية (د.ج)"].idxmin()]
-        st.markdown(f"<div class='best-choice-box'>💡 التوصية الذكية: الشاحنة <b>({best['نوع الشاحنة']})</b> هي الخيار الأرخص والأنسب حالياً.</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='best-choice-box'>💡 <b>توصية النظام:</b> الشاحنة <b>({best['نوع الشاحنة']})</b> هي الخيار الأمثل اقتصادياً لحمولتك حالياً.</div>", unsafe_allow_html=True)
 
     # 5. التقييم
     st.write("---")
-    st.markdown("### 🧪 رأيك في دقة النظام")
+    st.markdown("### 🧪 رأيك في دقة التنبؤ")
     c1, c2 = st.columns(2)
     with c1: 
-        if st.button("✅ دقيق جداً"): st.success("شكراً لتقييمك!"); st.balloons()
+        if st.button("✅ التنبؤ دقيق"): st.success("تم تسجيل تأكيدك بنجاح!"); st.snow()
     with c2: 
-        if st.button("❌ يحتاج تحسين"): st.warning("سيتم العمل على تطوير الخوارزمية.")
+        if st.button("❌ يحتاج تعديل"): st.warning("شكراً، سيتم تحديث الأوزان.")
 
 st.markdown(f'<div class="footer">مشروع التخرج: سهيل - تخصص اللوجستيك - جامعة بسكرة 2026</div>', unsafe_allow_html=True)
