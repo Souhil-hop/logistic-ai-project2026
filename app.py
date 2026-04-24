@@ -1,93 +1,72 @@
 import streamlit as st
-import plotly.graph_objects as go
-import time
 
-# 1. إعدادات الصفحة الفاخرة
-st.set_page_config(page_title="منصة سهيل اللوجستية 2026", layout="wide")
+# إعداد واجهة المستخدم
+st.set_page_config(page_title="المتنبيء اللوجستي - سهيل", layout="centered")
 
-# 2. تصميم CSS احترافي (Glassmorphism & Gradients)
+# التنسيق الفخم (أسود وذهبي) مع لمسة اسم سهيل
 st.markdown("""
     <style>
-    .stApp {
-        background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
-    }
-    .glass-card {
-        background: rgba(212, 175, 55, 0.05);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(212, 175, 55, 0.2);
-        border-radius: 20px;
-        padding: 25px;
-        color: white;
-    }
-    .stButton>button {
-        background: linear-gradient(90deg, #d4af37 0%, #f9d976 100%);
-        color: black !important;
-        border: none;
-        font-weight: bold;
-        transition: 0.3s ease;
-    }
-    .stButton>button:hover {
-        transform: scale(1.02);
-        box-shadow: 0px 0px 15px rgba(212, 175, 55, 0.5);
-    }
-    h1, h3 { color: #d4af37 !important; }
+    .main { background-color: #0d1117; color: #d4af37; }
+    .stButton>button { background-color: #d4af37; color: black; width: 100%; font-weight: bold; border-radius: 8px; border: none; height: 50px; }
+    label { color: #d4af37 !important; font-size: 16px; }
+    h1 { color: #d4af37; text-align: center; border-bottom: 2px solid #d4af37; padding-bottom: 10px; }
+    .footer { position: fixed; left: 0; bottom: 0; width: 100%; background-color: #0d1117; color: #d4af37; text-align: center; padding: 10px; font-style: italic; border-top: 1px solid #d4af37; }
     </style>
     """, unsafe_allow_html=True)
 
-# 3. الهيدر الإبداعي باسمك
-st.markdown("<h1>🌟 منصة التنبؤ اللوجستي الذكية</h1>", unsafe_allow_html=True)
-st.markdown("<h3 style='text-align: center;'>المهندس المطور: سهيل</h3>", unsafe_allow_html=True)
+# العنوان الرئيسي مع اسمك بوضوح
+st.title("🚚 نظام التنبؤ اللوجستي الذكي")
+st.markdown("<h3 style='text-align: center; color: #d4af37;'>بإشراف وتطوير: سهيل</h3>", unsafe_allow_html=True)
 st.write("---")
 
-# 4. توزيع العناصر بشكل احترافي
-col_input, col_chart = st.columns([1, 1.5])
+# قسم الرحلة
+st.markdown("### 📍 مسار الرحلة")
+col_loc1, col_loc2 = st.columns(2)
+with col_loc1:
+    start_point = st.text_input("نقطة الانطلاق", value="بسكرة")
+with col_loc2:
+    end_point = st.text_input("نقطة الوصول", value="الجزائر العاصمة")
 
-with col_input:
-    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-    st.subheader("📝 مدخلات النظام")
-    origin = st.text_input("نقطة الانطلاق", "بسكرة")
-    destination = st.text_input("نقطة الوصول", "الجزائر العاصمة")
-    
-    dist = st.slider("المسافة (كيلومتر)", 10, 1000, 400)
-    weight = st.number_input("الوزن الإجمالي (طن)", 0.1, 50.0, 1.0)
-    
-    truck = st.selectbox("أسطول النقل", ["شاحنة خفيفة", "شاحنة تبريد", "مقطورة دولية"])
-    fuel = st.number_input("سعر الوقود اليوم (د.ج)", value=29.0)
-    st.markdown('</div>', unsafe_allow_html=True)
+# المدخلات الأساسية
+st.markdown("### 📊 بيانات التشغيل")
+col1, col2 = st.columns(2)
+with col1:
+    dist = st.number_input("المسافة التقريبية (كم)", min_value=1.0, value=400.0)
+with col2:
+    wght = st.number_input("وزن الحمولة (طن)", min_value=0.1, value=1.0)
 
-# 5. منطق المعالجة والرسم البياني
-t_map = {"شاحنة خفيفة": 1.0, "شاحنة تبريد": 1.6, "مقطورة دولية": 2.3}
-prediction = ((dist * 0.7) + (weight * 300)) * t_map[truck] + (dist/5 * fuel) + 2000
+truck_type = st.selectbox("نوع الشاحنة المستخدمة", 
+                         ["شاحنة صغيرة (Caddy/Partner)", 
+                          "شاحنة متوسطة (Moyen tonnage)", 
+                          "شاحنة مقطورة (Semi-remorque)", 
+                          "شاحنة تبريد (Frigo)"])
 
-with col_chart:
-    st.subheader("📊 تحليل حساسية التكاليف")
-    # إنشاء رسم بياني يوضح تأثير زيادة الوزن على السعر
-    weights_range = [w for w in range(1, 21)]
-    prices_range = [(((dist * 0.7) + (w * 300)) * t_map[truck] + (dist/5 * fuel) + 2000) for w in weights_range]
-    
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=weights_range, y=prices_range, mode='lines+markers', line=dict(color='#d4af37', width=3)))
-    fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='#d4af37'),
-                      xaxis_title="الوزن (طن)", yaxis_title="التكلفة (د.ج)", margin=dict(l=0, r=0, t=30, b=0))
-    st.plotly_chart(fig, use_container_width=True)
+fuel_price = st.slider("سعر الوقود الحالي (د.ج/لتر)", min_value=20.0, max_value=50.0, value=29.1)
 
-# 6. زر التشغيل بتأثيرات بصرية
-if st.button("🚀 تشغيل محرك الذكاء الاصطناعي لسهيل"):
-    with st.status("جاري تحليل البيانات عبر Keras Engine...", expanded=True) as status:
-        time.sleep(1)
-        st.write("✅ جاري موازنة الأوزان (Weights)...")
-        time.sleep(1)
-        st.write("✅ جاري معالجة المسار اللوجستي...")
-        status.update(label="تم الانتهاء من التنبؤ!", state="complete", expanded=False)
+# زر التنبؤ
+if st.button("تحليل البيانات بواسطة خوارزمية سهيل"):
+    # منطق الأوزان (Weights) المحاكي لـ Keras
+    truck_weight = 1.0
+    if "متوسطة" in truck_type: truck_weight = 1.4
+    elif "مقطورة" in truck_type: truck_weight = 2.2
+    elif "تبريد" in truck_type: truck_weight = 2.8
     
+    fuel_impact = (dist / 5) * fuel_price
+    prediction = ((dist * 0.6) + (wght * 250)) * truck_weight + fuel_impact + 1500
+    
+    # عرض النتيجة في أيقونة وبطاقة ذهبية فخمة
     st.markdown(f"""
-        <div style="background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%); padding: 30px; border-radius: 20px; text-align: center; margin-top: 20px;">
-            <h2 style="color: black; margin-bottom: 0;">📦 التكلفة المقدرة للشحنة</h2>
-            <h1 style="color: black; font-size: 50px; margin: 10px 0;">{prediction:,.2f} د.ج</h1>
-            <p style="color: #222; font-weight: bold;">المسار الفعلي: من {origin} إلى {destination}</p>
+        <div style="background-color: #d4af37; padding: 25px; border-radius: 15px; text-align: center; border: 2px solid white;">
+            <h2 style="color: black; margin: 0;">💰 التكلفة التقديرية</h2>
+            <p style="color: black; font-size: 38px; font-weight: bold; margin: 10px 0;">
+                {prediction:,.2f} <span style="font-size: 20px;">د.ج</span>
+            </p>
+            <p style="color: #333; font-size: 16px; margin: 0; font-weight: bold;">المسار: من {start_point} إلى {end_point}</p>
         </div>
     """, unsafe_allow_html=True)
+    
+    # حركة احتفالية
     st.balloons()
 
-# 7. الفوتر
-st.markdown("<br><center style='color: #666;'>تطوير: المهندس سهيل | مشروع الذكاء الاصطناعي للخدمات اللوجستية 2026</center>", unsafe_allow_html=True)
+# التوقيع الثابت في الأسفل
+st.markdown(f'<div class="footer">المشروع التطبيقي للطالب: سهيل - جميع الحقوق محفوظة لولاية بسكرة 2026</div>', unsafe_allow_html=True)
