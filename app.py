@@ -30,19 +30,19 @@ wilayas_58 = [
     "56. جانت", "57. المغير", "58. المنيعة"
 ]
 
-# --- الصفحة الأولى: الواجهة الترحيبية (خلفية الميناء) ---
+# --- الصفحة الأولى: الواجهة الترحيبية (خلفية الميناء مع إطار شفاف) ---
 if st.session_state.page == 'welcome':
     st.markdown("""
         <style>
         .stApp {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
-                        url("https://images.unsplash.com/photo-1524522173746-f628baad3644?q=80&w=1500"); /* صورة ميناء حاويات */
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                        url("https://images.unsplash.com/photo-1524522173746-f628baad3644?q=80&w=1500");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
         }
         .welcome-box {
-            background-color: rgba(0, 0, 0, 0.85);
+            background-color: rgba(0, 0, 0, 0.4); /* شفافية عالية لرؤية الخلفية */
             padding: 50px;
             border-radius: 30px;
             text-align: center;
@@ -50,10 +50,11 @@ if st.session_state.page == 'welcome':
             margin: auto;
             max-width: 900px;
             margin-top: 50px;
+            backdrop-filter: blur(10px); /* تأثير ضبابي لجعل النص واضحاً */
             box-shadow: 0px 10px 30px rgba(0,0,0,0.5);
         }
-        .welcome-title { color: #d4af37; font-size: 42px; font-weight: bold; margin-bottom: 10px; }
-        .welcome-subtitle { color: #ffffff; font-size: 20px; margin-bottom: 30px; border-bottom: 1px solid #d4af37; padding-bottom: 15px; }
+        .welcome-title { color: #d4af37; font-size: 42px; font-weight: bold; }
+        .welcome-subtitle { color: #ffffff; font-size: 20px; border-bottom: 1px solid #d4af37; padding-bottom: 15px; }
         .welcome-desc { color: #e0e0e0; font-size: 22px; line-height: 1.8; }
         .stButton>button { 
             background-color: #d4af37 !important; 
@@ -73,7 +74,7 @@ if st.session_state.page == 'welcome':
             <h3 class="welcome-subtitle">تحت إشراف جامعة محمد خيضر بسكرة | من إعداد الطالب: سهيل عطالي</h3>
             <p class="welcome-desc">
                 مرحباً بكم في مشروع <b>محاكاة الشبكة العصبية</b> للتنبؤ بتكاليف النقل اللوجستي.
-                هذا النظام يستخدم خوارزميات متقدمة بلغة Python لتحليل البيانات ودعم اتخاذ القرار في 58 ولاية جزائرية.
+                نظام ذكي لتحليل البيانات ودعم اتخاذ القرار في 58 ولاية جزائرية.
             </p>
         </div>
     """, unsafe_allow_html=True)
@@ -83,31 +84,30 @@ if st.session_state.page == 'welcome':
         go_to_main()
         st.rerun()
 
-# --- الصفحة الثانية: منصة العمليات (خلفية المستودعات) ---
+# --- الصفحة الثانية: منصة العمليات (خلفية المستودع مع بطاقات شفافة) ---
 elif st.session_state.page == 'main':
     st.markdown("""
         <style>
         .stApp {
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
-                        url("https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1500"); /* صورة مستودع لوجستي */
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                        url("https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1500");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
         }
         .main-card {
-            background: rgba(13, 17, 23, 0.9);
+            background: rgba(13, 17, 23, 0.6); /* شفافية لرؤية تفاصيل المستودع */
             padding: 25px;
             border-radius: 15px;
             border-right: 5px solid #d4af37;
             margin-bottom: 20px;
+            backdrop-filter: blur(8px);
         }
         label { color: #d4af37 !important; font-size: 18px !important; font-weight: bold !important; }
         .footer { position: fixed; left: 0; bottom: 0; width: 100%; background-color: rgba(13, 17, 23, 0.9); color: #d4af37; text-align: center; padding: 8px; border-top: 1px solid #d4af37; font-weight: bold; }
-        .back-btn button { background-color: transparent !important; color: #d4af37 !important; border: 1px solid #d4af37 !important; height: 40px !important; }
         </style>
     """, unsafe_allow_html=True)
 
-    # صف يحتوي على زر الرجوع والعنوان
     col_back, col_title = st.columns([1, 5])
     with col_back:
         if st.button("⬅️ رجوع"):
@@ -115,8 +115,6 @@ elif st.session_state.page == 'main':
             st.rerun()
     with col_title:
         st.markdown("<h1 style='color: #d4af37; margin-top: -10px;'>📊 منصة التحليل والتنبؤ الذكي</h1>", unsafe_allow_html=True)
-
-    st.markdown("<p style='text-align: center; color: white;'>جامعة محمد خيضر بسكرة - إعداد سهيل عطالي</p>", unsafe_allow_html=True)
 
     with st.container():
         col1, col2 = st.columns(2)
@@ -148,20 +146,20 @@ elif st.session_state.page == 'main':
         total = base_cost + fuel_cost + maint + profit
 
         st.markdown(f"""
-            <div style="background: linear-gradient(45deg, #d4af37, #f4cf67); padding: 30px; border-radius: 20px; text-align: center; color: black; margin: 25px 0; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
+            <div style="background: linear-gradient(45deg, rgba(212,175,55,0.9), rgba(244,207,103,0.9)); padding: 30px; border-radius: 20px; text-align: center; color: black; margin: 25px 0; backdrop-filter: blur(5px);">
                 <h2 style="margin:0;">💵 التكلفة النهائية التقديرية 💵</h2>
                 <h1 style="font-size: 55px; margin:10px;">{total:,.2f} د.ج</h1>
                 <p>من <b>{start_p}</b> إلى <b>{end_p}</b></p>
             </div>
         """, unsafe_allow_html=True)
 
-        st.markdown("### 📋 تفصيل هيكلة التكاليف (Cost Breakdown)")
+        st.markdown("### 📋 تفصيل هيكلة التكاليف")
         st.table({
-            "بند التكلفة": ["⛽ تكاليف الوقود", "🔧 الصيانة والاهلاك", "🏗️ التشغيل والمسار", "📈 هامش الربح المستهدف"],
+            "بند التكلفة": ["⛽ تكاليف الوقود", "🔧 الصيانة والاهلاك", "🏗️ التشغيل والمسار", "📈 هامش الربح"],
             "القيمة (د.ج)": [f"{fuel_cost:,.2f}", f"{maint:,.2f}", f"{base_cost:,.2f}", f"{profit:,.2f}"]
         })
 
-        st.markdown("### 🔄 تحليل البدائل (Scenario Analysis)")
+        st.markdown("### 🔄 تحليل البدائل المقارن")
         comp_data = []
         for t, m in t_map.items():
             c = ((dist * 0.7) + (w_t * 300)) * m + fuel_cost + (base_cost*0.12) + profit
@@ -170,13 +168,10 @@ elif st.session_state.page == 'main':
         df = pd.DataFrame(comp_data)
         st.dataframe(df.style.highlight_min(subset=['💰 التكلفة الكلية'], color='#28a745'), use_container_width=True)
 
-        # قسم التقييم (جديد)
         st.write("---")
-        st.markdown("### 🧪 تقييم النموذج الذكي")
-        col_eval, _ = st.columns([2, 1])
-        with col_eval:
-            is_accurate = st.radio("هل كانت النتيجة دقيقة بناءً على تقديراتك الميدانية؟", ("نعم، دقيقة جداً", "تحتاج إلى تعديل طفيف", "غير دقيقة"))
-            if st.button("إرسال التقييم 📩"):
-                st.success("شكراً لك! سيتم استخدام تقييمك لتحسين أوزان الشبكة العصبية.")
+        st.markdown("### 🧪 تقييم النموذج")
+        is_accurate = st.radio("هل النتيجة دقيقة؟", ("نعم، دقيقة جداً", "تحتاج تعديل", "غير دقيقة"))
+        if st.button("إرسال التقييم 📩"):
+            st.success("تم استلام تقييمك بنجاح!")
 
     st.markdown("<div class='footer'>مشروع التخرج: سهيل عطالي - جامعة محمد خيضر بسكرة 2026</div>", unsafe_allow_html=True)
