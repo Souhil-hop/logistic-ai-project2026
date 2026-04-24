@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-# 1. إعداد الصفحة الأساسي (كامل كما كان)
+# 1. إعداد الصفحة الأساسي
 st.set_page_config(page_title="نظام سهيل للتنبؤ اللوجستي", layout="wide")
 
 # 2. إدارة التنقل بين الصفحات
@@ -11,7 +11,7 @@ if 'page' not in st.session_state:
 def go_to_main(): st.session_state.page = 'main'
 def go_to_welcome(): st.session_state.page = 'welcome'
 
-# قائمة الولايات الـ 58 كاملة (تظهر بالاسم والرقم كما طلبت سابقا)
+# قائمة الولايات الـ 58 كاملة
 wilayas_names = [
     "01. أدرار", "02. الشلف", "03. الأغواط", "04. أم البواقي", "05. باتنة", 
     "06. بجاية", "07. بسكرة", "08. بشار", "09. البليدة", "10. البويرة", 
@@ -27,7 +27,7 @@ wilayas_names = [
     "56. جانت", "57. المغير", "58. المنيعة"
 ]
 
-# --- كود CSS الشامل للحفاظ على الهوية البصرية والوضوح (بدون تغيير) ---
+# --- كود CSS الشامل للحفاظ على الهوية البصرية والوضوح ---
 st.markdown("""
     <style>
     * { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
@@ -52,7 +52,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- الصفحة الأولى: الواجهة الترحيبية مع التعريف المختصر والبالونات ---
+# --- الصفحة الأولى: الواجهة الترحيبية ---
 if st.session_state.page == 'welcome':
     st.markdown("""
         <style>
@@ -77,7 +77,7 @@ if st.session_state.page == 'welcome':
         go_to_main()
         st.rerun()
 
-# --- الصفحة الثانية: منصة التحليل (استعادة كل الخانات والجداول) ---
+# --- الصفحة الثانية: منصة التحليل ---
 elif st.session_state.page == 'main':
     st.markdown("""<style>.stApp { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1500"); background-size: cover; }</style>""", unsafe_allow_html=True)
     
@@ -101,13 +101,12 @@ elif st.session_state.page == 'main':
             st.markdown("### 💰 المعطيات المالية والتقنية")
             wght = st.number_input("⚖️ الوزن الإجمالي (كغ)", value=3000.0)
             fuel = st.number_input("⛽ سعر الوقود الحالي (د.ج/لتر)", value=29.10)
-            truck_type = st.selectbox("🚛 نوع الشاحنة المطلوبة", ["صغيرة", "متوسطة", "مقطورة دولية", "تبريد"]) # استعادة خانة الاختيار
+            truck_type = st.selectbox("🚛 نوع الشاحنة المطلوبة", ["صغيرة", "متوسطة", "مقطورة دولية", "تبريد"])
             st.markdown("</div>", unsafe_allow_html=True)
 
     if st.button("💎 حساب التكلفة النهائية وتوليد التقارير"):
         st.balloons()
         
-        # تعريف خصائص الشاحنات
         truck_specs = {
             "صغيرة": {"cap": 1500, "factor": 1.0},
             "متوسطة": {"cap": 5000, "factor": 1.4},
@@ -115,7 +114,6 @@ elif st.session_state.page == 'main':
             "مقطورة دولية": {"cap": 25000, "factor": 2.8}
         }
 
-        # 1. حساب تكلفة الخيار المختار يدوياً
         spec_manual = truck_specs[truck_type]
         base_manual = ((dist * 0.8) + ((wght/1000) * 400)) * spec_manual["factor"]
         fuel_manual = (dist / 5) * fuel
@@ -123,7 +121,6 @@ elif st.session_state.page == 'main':
         profit_manual = (base_manual + fuel_manual + maint_manual) * 0.20
         total_manual = base_manual + fuel_manual + maint_manual + profit_manual
 
-        # عرض التكلفة الكبيرة
         st.markdown(f"""
             <div style="background: linear-gradient(45deg, #d4af37, #f4cf67); padding: 25px; border-radius: 20px; text-align: center; color: black; margin-bottom: 25px;">
                 <h2 style="margin:0;">التكلفة التقديرية (للخيار المختار: {truck_type})</h2>
@@ -131,14 +128,12 @@ elif st.session_state.page == 'main':
             </div>
         """, unsafe_allow_html=True)
 
-        # الجدول الأول: هيكلة تكاليف الخيار المختار (استعادة الجدول السابق)
         st.markdown("### 📋 هيكلة تكاليف الخيار المختار")
         st.table(pd.DataFrame({
             "بند التكلفة": ["⛽ تكلفة الوقود", "🔧 الصيانة والإهلاك", "🏗️ التشغيل والمسار", "📈 هامش الربح"],
             "القيمة (د.ج)": [f"{fuel_manual:,.2f}", f"{maint_manual:,.2f}", f"{base_manual:,.2f}", f"{profit_manual:,.2f}"]
         }))
 
-        # 2. توليد بيانات جدول المقارنة وتحليل الكفاءة (الجدول الثاني)
         comparison_results = []
         valid_options = {}
 
@@ -163,7 +158,6 @@ elif st.session_state.page == 'main':
                 "التكلفة الكلية (د.ج)": f"{total_calc:,.2f}"
             })
 
-        # تحديد الأفضل والبديل في الجدول الثاني
         if valid_options:
             best_truck_name = min(valid_options, key=valid_options.get)
             for row in comparison_results:
@@ -175,12 +169,23 @@ elif st.session_state.page == 'main':
         st.markdown("### 🔄 جدول المقارنة وتحليل كفاءة التحميل السعري")
         st.table(pd.DataFrame(comparison_results))
 
-        # التوصية الذهبية (استعادة مظهرها الواضح)
         st.markdown(f"""
             <div class="recommendation-box">
                 💡 توصية النظام: الخيار الحالي ({truck_type}) تم تقييمه بناءً على مدخلاتك. 
                 بينما التحليل الشامل يشير إلى أن ({best_truck_name}) قد يكون الخيار الأكفأ اقتصادياً.
             </div>
         """, unsafe_allow_html=True)
+
+        # --- قسم التقييم الجديد ---
+        st.write("---")
+        st.markdown("### 🧪 تقييم دقة النموذج")
+        col_eval1, col_eval2 = st.columns([2, 1])
+        with col_eval1:
+            eval_score = st.radio("هل النتيجة دقيقة ومنطقية من وجهة نظرك؟", 
+                                 ("نعم، دقيقة جداً ✅", "تحتاج إلى تعديل بسيط ⚠️", "غير دقيقة ❌"), 
+                                 horizontal=True)
+        with col_eval2:
+            if st.button("إرسال التقييم 📩"):
+                st.success("شكراً على ملاحظتك يا سهيل! تم تسجيل التقييم.")
 
     st.markdown("<p style='text-align:center; color:#d4af37; font-weight:bold; margin-top:40px;'>مشروع التخرج: سهيل عطالي - جامعة محمد خيضر بسكرة 2026</p>", unsafe_allow_html=True)
