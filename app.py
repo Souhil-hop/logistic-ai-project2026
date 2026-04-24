@@ -11,6 +11,9 @@ if 'page' not in st.session_state:
 def go_to_main():
     st.session_state.page = 'main'
 
+def go_to_welcome():
+    st.session_state.page = 'welcome'
+
 # قائمة الـ 58 ولاية كاملة
 wilayas_58 = [
     "01. أدرار", "02. الشلف", "03. الأغواط", "04. أم البواقي", "05. باتنة", 
@@ -27,13 +30,13 @@ wilayas_58 = [
     "56. جانت", "57. المغير", "58. المنيعة"
 ]
 
-# --- الصفحة الأولى: الواجهة الترحيبية ---
+# --- الصفحة الأولى: الواجهة الترحيبية (خلفية الميناء) ---
 if st.session_state.page == 'welcome':
     st.markdown("""
         <style>
         .stApp {
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
-                        url("https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1500");
+                        url("https://images.unsplash.com/photo-1524522173746-f628baad3644?q=80&w=1500"); /* صورة ميناء حاويات */
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -80,13 +83,13 @@ if st.session_state.page == 'welcome':
         go_to_main()
         st.rerun()
 
-# --- الصفحة الثانية: منصة العمليات ---
+# --- الصفحة الثانية: منصة العمليات (خلفية المستودعات) ---
 elif st.session_state.page == 'main':
     st.markdown("""
         <style>
         .stApp {
-            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
-                        url("https://images.unsplash.com/photo-1519003722824-194d4455a60c?q=80&w=1500");
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
+                        url("https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1500"); /* صورة مستودع لوجستي */
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -100,15 +103,20 @@ elif st.session_state.page == 'main':
         }
         label { color: #d4af37 !important; font-size: 18px !important; font-weight: bold !important; }
         .footer { position: fixed; left: 0; bottom: 0; width: 100%; background-color: rgba(13, 17, 23, 0.9); color: #d4af37; text-align: center; padding: 8px; border-top: 1px solid #d4af37; font-weight: bold; }
+        .back-btn button { background-color: transparent !important; color: #d4af37 !important; border: 1px solid #d4af37 !important; height: 40px !important; }
         </style>
     """, unsafe_allow_html=True)
 
-    st.markdown("<h1 style='text-align: center; color: #d4af37;'>📊 منصة التحليل والتنبؤ الذكي</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: white;'>جامعة محمد خيضر بسكرة - إعداد سهيل عطالي</p>", unsafe_allow_html=True)
+    # صف يحتوي على زر الرجوع والعنوان
+    col_back, col_title = st.columns([1, 5])
+    with col_back:
+        if st.button("⬅️ رجوع"):
+            go_to_welcome()
+            st.rerun()
+    with col_title:
+        st.markdown("<h1 style='color: #d4af37; margin-top: -10px;'>📊 منصة التحليل والتنبؤ الذكي</h1>", unsafe_allow_html=True)
 
-    if st.sidebar.button("🏠 العودة للرئيسية"):
-        st.session_state.page = 'welcome'
-        st.rerun()
+    st.markdown("<p style='text-align: center; color: white;'>جامعة محمد خيضر بسكرة - إعداد سهيل عطالي</p>", unsafe_allow_html=True)
 
     with st.container():
         col1, col2 = st.columns(2)
@@ -131,7 +139,6 @@ elif st.session_state.page == 'main':
     if st.button("💎 حساب التكلفة النهائية وتوليد التقرير"):
         st.balloons()
         
-        # خوارزمية الحساب (Neural Network Weights Simulation)
         t_map = {"صغيرة": 1.0, "متوسطة": 1.4, "مقطورة دولية": 2.2, "تبريد": 2.8}
         w_t = wght_kg / 1000.0
         base_cost = ((dist * 0.7) + (w_t * 300)) * t_map[chosen_truck]
@@ -148,14 +155,12 @@ elif st.session_state.page == 'main':
             </div>
         """, unsafe_allow_html=True)
 
-        # جدول هيكلة التكاليف
         st.markdown("### 📋 تفصيل هيكلة التكاليف (Cost Breakdown)")
         st.table({
             "بند التكلفة": ["⛽ تكاليف الوقود", "🔧 الصيانة والاهلاك", "🏗️ التشغيل والمسار", "📈 هامش الربح المستهدف"],
             "القيمة (د.ج)": [f"{fuel_cost:,.2f}", f"{maint:,.2f}", f"{base_cost:,.2f}", f"{profit:,.2f}"]
         })
 
-        # المقارنة الذكية
         st.markdown("### 🔄 تحليل البدائل (Scenario Analysis)")
         comp_data = []
         for t, m in t_map.items():
@@ -164,5 +169,14 @@ elif st.session_state.page == 'main':
         
         df = pd.DataFrame(comp_data)
         st.dataframe(df.style.highlight_min(subset=['💰 التكلفة الكلية'], color='#28a745'), use_container_width=True)
+
+        # قسم التقييم (جديد)
+        st.write("---")
+        st.markdown("### 🧪 تقييم النموذج الذكي")
+        col_eval, _ = st.columns([2, 1])
+        with col_eval:
+            is_accurate = st.radio("هل كانت النتيجة دقيقة بناءً على تقديراتك الميدانية؟", ("نعم، دقيقة جداً", "تحتاج إلى تعديل طفيف", "غير دقيقة"))
+            if st.button("إرسال التقييم 📩"):
+                st.success("شكراً لك! سيتم استخدام تقييمك لتحسين أوزان الشبكة العصبية.")
 
     st.markdown("<div class='footer'>مشروع التخرج: سهيل عطالي - جامعة محمد خيضر بسكرة 2026</div>", unsafe_allow_html=True)
