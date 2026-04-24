@@ -30,7 +30,7 @@ wilayas_58 = [
     "56. جانت", "57. المغير", "58. المنيعة"
 ]
 
-# --- الصفحة الأولى: الواجهة الترحيبية (خلفية الميناء مع إطار شفاف) ---
+# --- الصفحة الأولى: الواجهة الترحيبية ---
 if st.session_state.page == 'welcome':
     st.markdown("""
         <style>
@@ -42,7 +42,7 @@ if st.session_state.page == 'welcome':
             background-attachment: fixed;
         }
         .welcome-box {
-            background-color: rgba(0, 0, 0, 0.4); /* شفافية عالية لرؤية الخلفية */
+            background-color: rgba(0, 0, 0, 0.4);
             padding: 50px;
             border-radius: 30px;
             text-align: center;
@@ -50,7 +50,7 @@ if st.session_state.page == 'welcome':
             margin: auto;
             max-width: 900px;
             margin-top: 50px;
-            backdrop-filter: blur(10px); /* تأثير ضبابي لجعل النص واضحاً */
+            backdrop-filter: blur(10px);
             box-shadow: 0px 10px 30px rgba(0,0,0,0.5);
         }
         .welcome-title { color: #d4af37; font-size: 42px; font-weight: bold; }
@@ -84,7 +84,7 @@ if st.session_state.page == 'welcome':
         go_to_main()
         st.rerun()
 
-# --- الصفحة الثانية: منصة العمليات (خلفية المستودع مع بطاقات شفافة) ---
+# --- الصفحة الثانية: منصة العمليات ---
 elif st.session_state.page == 'main':
     st.markdown("""
         <style>
@@ -96,7 +96,7 @@ elif st.session_state.page == 'main':
             background-attachment: fixed;
         }
         .main-card {
-            background: rgba(13, 17, 23, 0.6); /* شفافية لرؤية تفاصيل المستودع */
+            background: rgba(13, 17, 23, 0.6);
             padding: 25px;
             border-radius: 15px;
             border-right: 5px solid #d4af37;
@@ -123,14 +123,15 @@ elif st.session_state.page == 'main':
             st.markdown("### 📍 مسار الرحلة")
             start_p = st.selectbox("🚩 نقطة الانطلاق (Origin)", wilayas_58, index=6)
             end_p = st.selectbox("🏁 نقطة الوصول (Destination)", wilayas_58, index=15)
-            dist = st.number_input("📏 المسافة الإجمالية (كم)", value=400.0)
+            # استخدام step=0.01 لضمان سلاسة الأرقام
+            dist = st.number_input("📏 المسافة الإجمالية (كم)", value=400.0, step=1.0)
             st.markdown("</div>", unsafe_allow_html=True)
 
         with col2:
             st.markdown("<div class='main-card'>", unsafe_allow_html=True)
             st.markdown("### 💰 المعطيات المالية والتقنية")
-            wght_kg = st.number_input("⚖️ الوزن الإجمالي (كغ)", value=1000.0)
-            fuel_p = st.number_input("⛽ سعر الوقود الحالي (د.ج/لتر)", value=29.1)
+            wght_kg = st.number_input("⚖️ الوزن الإجمالي (كغ)", value=1000.0, step=1.0)
+            fuel_p = st.number_input("⛽ سعر الوقود الحالي (د.ج/لتر)", value=29.1, format="%.2f")
             chosen_truck = st.selectbox("🚛 نوع الشاحنة المطلوبة", ["صغيرة", "متوسطة", "مقطورة دولية", "تبريد"])
             st.markdown("</div>", unsafe_allow_html=True)
 
@@ -145,6 +146,7 @@ elif st.session_state.page == 'main':
         profit = (base_cost + fuel_cost + maint) * 0.20
         total = base_cost + fuel_cost + maint + profit
 
+        # عرض النتيجة بتنسيق أرقام واضحة
         st.markdown(f"""
             <div style="background: linear-gradient(45deg, rgba(212,175,55,0.9), rgba(244,207,103,0.9)); padding: 30px; border-radius: 20px; text-align: center; color: black; margin: 25px 0; backdrop-filter: blur(5px);">
                 <h2 style="margin:0;">💵 التكلفة النهائية التقديرية 💵</h2>
@@ -153,25 +155,21 @@ elif st.session_state.page == 'main':
             </div>
         """, unsafe_allow_html=True)
 
+        # جدول هيكلة التكاليف (إجبار الأرقام على التنسيق الغربي)
         st.markdown("### 📋 تفصيل هيكلة التكاليف")
-        st.table({
+        cost_df = pd.DataFrame({
             "بند التكلفة": ["⛽ تكاليف الوقود", "🔧 الصيانة والاهلاك", "🏗️ التشغيل والمسار", "📈 هامش الربح"],
             "القيمة (د.ج)": [f"{fuel_cost:,.2f}", f"{maint:,.2f}", f"{base_cost:,.2f}", f"{profit:,.2f}"]
         })
+        st.table(cost_df)
 
         st.markdown("### 🔄 تحليل البدائل المقارن")
         comp_data = []
         for t, m in t_map.items():
             c = ((dist * 0.7) + (w_t * 300)) * m + fuel_cost + (base_cost*0.12) + profit
-            comp_data.append({"🚛 الشاحنة": t, "💰 التكلفة الكلية": round(c, 2)})
+            comp_data.append({"🚛 الشاحنة": t, "💰 التكلفة الكلية": f"{c:,.2f}"})
         
-        df = pd.DataFrame(comp_data)
-        st.dataframe(df.style.highlight_min(subset=['💰 التكلفة الكلية'], color='#28a745'), use_container_width=True)
-
-        st.write("---")
-        st.markdown("### 🧪 تقييم النموذج")
-        is_accurate = st.radio("هل النتيجة دقيقة؟", ("نعم، دقيقة جداً", "تحتاج تعديل", "غير دقيقة"))
-        if st.button("إرسال التقييم 📩"):
-            st.success("تم استلام تقييمك بنجاح!")
+        df_comp = pd.DataFrame(comp_data)
+        st.dataframe(df_comp, use_container_width=True)
 
     st.markdown("<div class='footer'>مشروع التخرج: سهيل عطالي - جامعة محمد خيضر بسكرة 2026</div>", unsafe_allow_html=True)
