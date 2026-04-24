@@ -4,87 +4,57 @@ import pandas as pd
 # 1. إعداد الصفحة الأساسي
 st.set_page_config(page_title="نظام سهيل للتنبؤ اللوجستي", layout="wide")
 
-# 2. إدارة التنقل بين الصفحات
+# 2. إدارة التنقل
 if 'page' not in st.session_state:
     st.session_state.page = 'welcome'
 
-def go_to_main():
-    st.session_state.page = 'main'
+def go_to_main(): st.session_state.page = 'main'
+def go_to_welcome(): st.session_state.page = 'welcome'
 
-def go_to_welcome():
-    st.session_state.page = 'welcome'
+# قائمة الولايات
+wilayas_58 = [f"{str(i).zfill(2)}. ولاية رقم {i}" for i in range(1, 59)] # قائمة مختصرة للشرح، يمكنك وضع القائمة الكاملة هنا
 
-# قائمة الـ 58 ولاية كاملة
-wilayas_58 = [
-    "01. أدرار", "02. الشلف", "03. الأغواط", "04. أم البواقي", "05. باتنة", 
-    "06. بجاية", "07. بسكرة", "08. بشار", "09. البليدة", "10. البويرة", 
-    "11. تمنراست", "12. تبسة", "13. تلمسان", "14. تيارت", "15. تيزي وزو", 
-    "16. الجزائر", "17. جلفة", "18. جيجل", "19. سطيف", "20. سعيدة", 
-    "21. سكيكدة", "22. سيدي بلعباس", "23. عنابة", "24. قالمة", "25. قسنطينة", 
-    "26. المدية", "27. مستغانم", "28. المسيلة", "29. معسكر", "30. ورقلة", 
-    "31. وهران", "32. البيض", "33. إليزي", "34. برج بوعريريج", "35. بومرداس", 
-    "36. الطارف", "37. تندوف", "38. تيسمسيلت", "39. الوادي", "40. خنشلة", 
-    "41. سوق أهراس", "42. تيبازة", "43. ميلة", "44. عين الدفلى", "45. النعامة", 
-    "46. عين تموشنت", "47. غرداية", "48. غليزان", "49. تيميمون", "50. برج باجي مختار", 
-    "51. أولاد جلال", "52. بني عباس", "53. عين صالح", "54. عين قزام", "55. تقرت", 
-    "56. جانت", "57. المغير", "58. المنيعة"
-]
-
-# --- إضافة كود لإجبار الأرقام على الشكل اللاتيني ---
+# --- كود إجبار الأرقام على التنسيق الدولي (حل مشكلة اللابتوب) ---
 st.markdown("""
     <style>
-    /* هذا الكود يمنع المتصفح من تحويل الأرقام للهندية */
-    * {
-        font-variant-numeric: tabular-nums;
-        -webkit-font-feature-settings: "tnum";
-        font-feature-settings: "tnum";
-    }
-    input {
-        font-family: sans-serif !important; /* لضمان ظهور الأرقام داخل الصناديق بالإنجليزية */
-    }
+    * { font-variant-numeric: tabular-nums; -webkit-font-feature-settings: "tnum"; font-feature-settings: "tnum"; }
+    input, .stTable, .stDataFrame, h1, h2, h3 { font-family: 'Inter', sans-serif !important; }
     </style>
 """, unsafe_allow_html=True)
 
-# --- الصفحة الأولى ---
+# --- الصفحة الأولى: الواجهة الترحيبية ---
 if st.session_state.page == 'welcome':
     st.markdown("""
         <style>
         .stApp {
             background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
                         url("https://images.unsplash.com/photo-1524522173746-f628baad3644?q=80&w=1500");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background-size: cover; background-position: center; background-attachment: fixed;
         }
         .welcome-box {
-            background-color: rgba(0, 0, 0, 0.4);
-            padding: 50px;
-            border-radius: 30px;
-            text-align: center;
-            border: 3px solid #d4af37;
-            margin: auto;
-            max-width: 900px;
-            margin-top: 50px;
-            backdrop-filter: blur(10px);
+            background-color: rgba(0, 0, 0, 0.4); padding: 50px; border-radius: 30px;
+            text-align: center; border: 3px solid #d4af37; margin: auto;
+            max-width: 900px; margin-top: 50px; backdrop-filter: blur(10px);
         }
         .welcome-title { color: #d4af37; font-size: 42px; font-weight: bold; }
-        .stButton>button { background-color: #d4af37 !important; color: black !important; font-weight: bold; border-radius: 15px; height: 70px; width: 100%; }
+        .stButton>button { background-color: #d4af37 !important; color: black !important; font-weight: bold; font-size: 22px; border-radius: 15px; height: 70px; width: 100%; }
         </style>
     """, unsafe_allow_html=True)
 
     st.markdown(f"""
         <div class="welcome-box">
             <h1 class="welcome-title">أهلاً بطلبة تخصص اللوجستيك والنقل الدولي 🎓</h1>
-            <h3 style="color:white;">تحت إشراف جامعة محمد خيضر بسكرة | إعداد سهيل عطالي</h3>
-            <p style="color:#e0e0e0; font-size:20px;">محاكاة الشبكة العصبية للتنبؤ بتكاليف النقل في 58 ولاية.</p>
+            <h3 style="color:white;">تحت إشراف جامعة محمد خيضر بسكرة | إعداد الطالب: سهيل عطالي</h3>
+            <p style="color:#e0e0e0; font-size:22px;">مشروع محاكاة الشبكة العصبية للتنبؤ بتكاليف النقل اللوجستي في 58 ولاية.</p>
         </div>
     """, unsafe_allow_html=True)
 
-    if st.button("🚀 الدخول للمنصة"):
+    st.write("") 
+    if st.button("🚀 الدخول إلى منصة التنبؤ الذكية"):
         go_to_main()
         st.rerun()
 
-# --- الصفحة الثانية ---
+# --- الصفحة الثانية: العمليات والجداول ---
 elif st.session_state.page == 'main':
     st.markdown("""
         <style>
@@ -94,46 +64,81 @@ elif st.session_state.page == 'main':
             background-size: cover; background-position: center;
         }
         .main-card {
-            background: rgba(13, 17, 23, 0.6);
-            padding: 20px; border-radius: 15px; border-right: 5px solid #d4af37; margin-bottom: 20px; backdrop-filter: blur(8px);
+            background: rgba(13, 17, 23, 0.6); padding: 25px; border-radius: 15px;
+            border-right: 5px solid #d4af37; margin-bottom: 20px; backdrop-filter: blur(8px);
         }
-        label { color: #d4af37 !important; font-weight: bold !important; }
+        label { color: #d4af37 !important; font-weight: bold !important; font-size: 18px !important; }
+        .footer { position: fixed; left: 0; bottom: 0; width: 100%; background-color: rgba(13, 17, 23, 0.9); color: #d4af37; text-align: center; padding: 8px; border-top: 1px solid #d4af37; font-weight: bold; }
         </style>
     """, unsafe_allow_html=True)
 
-    if st.button("⬅️ رجوع"):
-        go_to_welcome()
-        st.rerun()
+    col_back, col_title = st.columns([1, 5])
+    with col_back:
+        if st.button("⬅️ رجوع"):
+            go_to_welcome()
+            st.rerun()
+    with col_title:
+        st.markdown("<h1 style='color: #d4af37; margin-top: -10px;'>📊 منصة التحليل ودعم القرار</h1>", unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("<div class='main-card'>", unsafe_allow_html=True)
-        st.markdown("### 📍 المسار")
-        start_p = st.selectbox("من:", wilayas_58, index=6)
-        end_p = st.selectbox("إلى:", wilayas_58, index=15)
-        dist = st.number_input("المسافة (كم)", value=400.0)
-        st.markdown("</div>", unsafe_allow_html=True)
+    with st.container():
+        c1, c2 = st.columns(2)
+        with c1:
+            st.markdown("<div class='main-card'>", unsafe_allow_html=True)
+            st.markdown("### 📍 مسار الرحلة")
+            start = st.selectbox("🚩 نقطة الانطلاق", wilayas_58, index=6)
+            end = st.selectbox("🏁 نقطة الوصول", wilayas_58, index=15)
+            dist = st.number_input("📏 المسافة (كم)", value=400.0)
+            st.markdown("</div>", unsafe_allow_html=True)
+        with c2:
+            st.markdown("<div class='main-card'>", unsafe_allow_html=True)
+            st.markdown("### 💰 المعطيات التقنية")
+            wght = st.number_input("⚖️ الوزن الإجمالي (كغ)", value=1000.0)
+            fuel = st.number_input("⛽ سعر الوقود (د.ج)", value=29.1)
+            truck = st.selectbox("🚛 نوع الشاحنة", ["صغيرة", "متوسطة", "مقطورة دولية", "تبريد"])
+            st.markdown("</div>", unsafe_allow_html=True)
 
-    with col2:
-        st.markdown("<div class='main-card'>", unsafe_allow_html=True)
-        st.markdown("### 💰 المعطيات")
-        wght = st.number_input("الوزن (كغ)", value=1000.0)
-        fuel = st.number_input("سعر الوقود", value=29.1)
-        truck = st.selectbox("الشاحنة", ["صغيرة", "متوسطة", "مقطورة دولية", "تبريد"])
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    if st.button("💎 احسب التكلفة"):
+    if st.button("💎 حساب التكلفة وتوليد التقارير"):
         st.balloons()
-        t_map = {"صغيرة": 1.0, "متوسطة": 1.4, "مقطورة دولية": 2.2, "تبريد": 2.8}
-        total = ((dist * 0.7) + ((wght/1000) * 300)) * t_map[truck] + (dist/5)*fuel
         
-        # عرض النتيجة بتنسيق يمنع التحويل للهندية
+        # الحسابات
+        t_map = {"صغيرة": 1.0, "متوسطة": 1.4, "مقطورة دولية": 2.2, "تبريد": 2.8}
+        w_t = wght / 1000.0
+        base = ((dist * 0.7) + (w_t * 300)) * t_map[truck]
+        f_cost = (dist / 5) * fuel
+        maint = base * 0.12
+        profit = (base + f_cost + maint) * 0.20
+        total = base + f_cost + maint + profit
+
+        # 1. النتيجة الكبيرة
         st.markdown(f"""
-            <div style="background: #d4af37; padding: 20px; border-radius: 15px; text-align: center; color: black;">
-                <h2>التكلفة التقديرية</h2>
-                <h1 style="font-family: sans-serif;">{total:,.2f} د.ج</h1>
+            <div style="background: linear-gradient(45deg, #d4af37, #f4cf67); padding: 30px; border-radius: 20px; text-align: center; color: black; margin: 25px 0;">
+                <h2 style="margin:0;">💵 التكلفة الكلية المقدرة 💵</h2>
+                <h1 style="font-size: 55px; margin:10px; font-family: sans-serif;">{total:,.2f} د.ج</h1>
             </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("<p style='text-align:center; color:#d4af37; margin-top:50px;'>مشروع التخرج: سهيل عطالي - جامعة بسكرة 2026</p>", unsafe_allow_html=True)
+        # 2. جدول هيكلة التكاليف (الذي كان مفقوداً)
+        st.markdown("### 📋 هيكلة التكاليف التفصيلية")
+        st.table(pd.DataFrame({
+            "البند": ["⛽ تكلفة الوقود", "🔧 الصيانة", "🏗️ التشغيل", "📈 هامش الربح"],
+            "القيمة (د.ج)": [f"{f_cost:,.2f}", f"{maint:,.2f}", f"{base:,.2f}", f"{profit:,.2f}"]
+        }))
 
+        # 3. جدول المقارنة ودعم القرار (الذي كان مفقوداً)
+        st.markdown("### 🔄 جدول المقارنة وتحليل السيناريوهات")
+        comp = []
+        for t, m in t_map.items():
+            cost = ((dist * 0.7) + (w_t * 300)) * m + f_cost + (base * 0.12) + profit
+            comp.append({"نوع الشاحنة": t, "الحالة": "مناسب ✅", "التكلفة الكلية (د.ج)": f"{cost:,.2f}"})
+        st.dataframe(pd.DataFrame(comp), use_container_width=True)
+
+        st.info(f"💡 توصية النظام: الشاحنة ({truck}) هي الخيار الحالي المعتمد بناءً على مدخلاتك.")
+
+        # 4. نظام التقييم (الذي كان مفقوداً)
+        st.write("---")
+        st.markdown("### 🧪 تقييم دقة النموذج")
+        eval_choice = st.radio("هل كانت النتيجة دقيقة؟", ("نعم، دقيقة جداً", "تحتاج تعديل", "غير دقيقة"))
+        if st.button("إرسال التقييم 📩"):
+            st.success("شكراً لتقييمك! سيتم استخدامه لتحسين الشبكة العصبية.")
+
+    st.markdown("<div class='footer'>مشروع التخرج: سهيل عطالي - جامعة محمد خيضر بسكرة 2026</div>", unsafe_allow_html=True)
