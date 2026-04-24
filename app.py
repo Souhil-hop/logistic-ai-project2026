@@ -1,25 +1,55 @@
 import streamlit as st
 
-# إعداد واجهة المستخدم
+# 1. إعداد واجهة المستخدم
 st.set_page_config(page_title="المتنبيء اللوجستي - سهيل", layout="centered")
 
-# التنسيق الفخم (أسود وذهبي) مع لمسة اسم سهيل
+# 2. التنسيق الفخم (أسود وذهبي)
 st.markdown("""
     <style>
     .main { background-color: #0d1117; color: #d4af37; }
-    .stButton>button { background-color: #d4af37; color: black; width: 100%; font-weight: bold; border-radius: 8px; border: none; height: 50px; }
+    .stButton>button { 
+        background-color: #d4af37; 
+        color: black; 
+        width: 100%; 
+        font-weight: bold; 
+        border-radius: 8px; 
+        border: none; 
+        height: 50px; 
+    }
     label { color: #d4af37 !important; font-size: 16px; }
-    h1 { color: #d4af37; text-align: center; border-bottom: 2px solid #d4af37; padding-bottom: 10px; }
-    .footer { position: fixed; left: 0; bottom: 0; width: 100%; background-color: #0d1117; color: #d4af37; text-align: center; padding: 10px; font-style: italic; border-top: 1px solid #d4af37; }
+    h1 { color: #d4af37; text-align: center; border-bottom: 2px solid #d4af37; padding-bottom: 10px; margin-top: 0px; }
+    .university-header {
+        text-align: center;
+        color: #d4af37;
+        font-weight: bold;
+        font-size: 18px;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+    }
+    .footer { 
+        position: fixed; 
+        left: 0; 
+        bottom: 0; 
+        width: 100%; 
+        background-color: #0d1117; 
+        color: #d4af37; 
+        text-align: center; 
+        padding: 10px; 
+        font-style: italic; 
+        border-top: 1px solid #d4af37; 
+    }
     </style>
     """, unsafe_allow_html=True)
 
-# العنوان الرئيسي مع اسمك بوضوح
+# 3. الهيدر (برعاية الجامعة)
+st.markdown("<div class='university-header'>🎓 برعاية جامعة محمد خيضر - بسكرة</div>", unsafe_allow_html=True)
+
+# 4. العنوان الرئيسي واسم المطور (سهيل)
 st.title("🚚 نظام التنبؤ اللوجستي الذكي")
-st.markdown("<h3 style='text-align: center; color: #d4af37;'>بإشراف وتطوير: سهيل</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center; color: #d4af37;'>بإشراف وتطوير الطالب: سهيل</h3>", unsafe_allow_html=True)
 st.write("---")
 
-# قسم الرحلة
+# 5. قسم مسار الرحلة
 st.markdown("### 📍 مسار الرحلة")
 col_loc1, col_loc2 = st.columns(2)
 with col_loc1:
@@ -27,7 +57,7 @@ with col_loc1:
 with col_loc2:
     end_point = st.text_input("نقطة الوصول", value="الجزائر العاصمة")
 
-# المدخلات الأساسية
+# 6. المدخلات الأساسية للبيانات
 st.markdown("### 📊 بيانات التشغيل")
 col1, col2 = st.columns(2)
 with col1:
@@ -43,9 +73,8 @@ truck_type = st.selectbox("نوع الشاحنة المستخدمة",
 
 fuel_price = st.slider("سعر الوقود الحالي (د.ج/لتر)", min_value=20.0, max_value=50.0, value=29.1)
 
-# زر التنبؤ
-if st.button("تحليل البيانات بواسطة خوارزمية سهيل"):
-    # منطق الأوزان (Weights) المحاكي لـ Keras
+# 7. زر التنبؤ (تم تعديل النص ليكون رسمياً)
+if st.button("بدء تحليل البيانات اللوجستية"):
     truck_weight = 1.0
     if "متوسطة" in truck_type: truck_weight = 1.4
     elif "مقطورة" in truck_type: truck_weight = 2.2
@@ -54,7 +83,6 @@ if st.button("تحليل البيانات بواسطة خوارزمية سهيل
     fuel_impact = (dist / 5) * fuel_price
     prediction = ((dist * 0.6) + (wght * 250)) * truck_weight + fuel_impact + 1500
     
-    # عرض النتيجة في أيقونة وبطاقة ذهبية فخمة
     st.markdown(f"""
         <div style="background-color: #d4af37; padding: 25px; border-radius: 15px; text-align: center; border: 2px solid white;">
             <h2 style="color: black; margin: 0;">💰 التكلفة التقديرية</h2>
@@ -65,8 +93,7 @@ if st.button("تحليل البيانات بواسطة خوارزمية سهيل
         </div>
     """, unsafe_allow_html=True)
     
-    # حركة احتفالية
     st.balloons()
 
-# التوقيع الثابت في الأسفل
+# 8. التوقيع الثابت (الفوتر)
 st.markdown(f'<div class="footer">المشروع التطبيقي للطالب: سهيل - جميع الحقوق محفوظة لولاية بسكرة 2026</div>', unsafe_allow_html=True)
