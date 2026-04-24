@@ -11,14 +11,49 @@ if 'page' not in st.session_state:
 def go_to_main(): st.session_state.page = 'main'
 def go_to_welcome(): st.session_state.page = 'welcome'
 
-# قائمة الولايات
-wilayas_58 = [f"{str(i).zfill(2)}. ولاية رقم {i}" for i in range(1, 59)] # قائمة مختصرة للشرح، يمكنك وضع القائمة الكاملة هنا
+# قائمة الولايات الـ 58 بالأسماء (لإصلاح مشكلة ظهور الأرقام فقط)
+wilayas_names = [
+    "01. أدرار", "02. الشلف", "03. الأغواط", "04. أم البواقي", "05. باتنة", 
+    "06. بجاية", "07. بسكرة", "08. بشار", "09. البليدة", "10. البويرة", 
+    "11. تمنراست", "12. تبسة", "13. تلمسان", "14. تيارت", "15. تيزي وزو", 
+    "16. الجزائر", "17. جلفة", "18. جيجل", "19. سطيف", "20. سعيدة", 
+    "21. سكيكدة", "22. سيدي بلعباس", "23. عنابة", "24. قالمة", "25. قسنطينة", 
+    "26. المدية", "27. مستغانم", "28. المسيلة", "29. معسكر", "30. ورقلة", 
+    "31. وهران", "32. البيض", "33. إليزي", "34. برج بوعريريج", "35. بومرداس", 
+    "36. الطارف", "37. تندوف", "38. تيسمسيلت", "39. الوادي", "40. خنشلة", 
+    "41. سوق أهراس", "42. تيبازة", "43. ميلة", "44. عين الدفلى", "45. النعامة", 
+    "46. عين تموشنت", "47. غرداية", "48. غليزان", "49. تيميمون", "50. برج باجي مختار", 
+    "51. أولاد جلال", "52. بني عباس", "53. عين صالح", "54. عين قزام", "55. تقرت", 
+    "56. جانت", "57. المغير", "58. المنيعة"
+]
 
-# --- كود إجبار الأرقام على التنسيق الدولي (حل مشكلة اللابتوب) ---
+# --- كود إجبار الأرقام وتحسين وضوح الجداول والتوصية ---
 st.markdown("""
     <style>
     * { font-variant-numeric: tabular-nums; -webkit-font-feature-settings: "tnum"; font-feature-settings: "tnum"; }
     input, .stTable, .stDataFrame, h1, h2, h3 { font-family: 'Inter', sans-serif !important; }
+    
+    /* تحسين وضوح الجداول مع الحفاظ على الشفافية */
+    .stTable, [data-testid="stTable"] {
+        background-color: rgba(0, 0, 0, 0.5) !important;
+        border-radius: 10px;
+        color: white !important;
+    }
+    th { background-color: rgba(212, 175, 55, 0.3) !important; color: #d4af37 !important; font-weight: bold !important; }
+    td { border-bottom: 1px solid rgba(212, 175, 55, 0.2) !important; font-size: 16px !important; }
+
+    /* تعديل صندوق التوصية ليكون مقروءاً (ذهبي زجاجي بدلاً من الأزرق) */
+    .recommendation-box {
+        background-color: rgba(212, 175, 55, 0.15);
+        border: 1px solid #d4af37;
+        padding: 15px;
+        border-radius: 10px;
+        color: #f4cf67;
+        font-weight: bold;
+        backdrop-filter: blur(5px);
+        margin-top: 10px;
+        text-align: center;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -49,7 +84,6 @@ if st.session_state.page == 'welcome':
         </div>
     """, unsafe_allow_html=True)
 
-    st.write("") 
     if st.button("🚀 الدخول إلى منصة التنبؤ الذكية"):
         go_to_main()
         st.rerun()
@@ -85,16 +119,17 @@ elif st.session_state.page == 'main':
         with c1:
             st.markdown("<div class='main-card'>", unsafe_allow_html=True)
             st.markdown("### 📍 مسار الرحلة")
-            start = st.selectbox("🚩 نقطة الانطلاق", wilayas_58, index=6)
-            end = st.selectbox("🏁 نقطة الوصول", wilayas_58, index=15)
-            dist = st.number_input("📏 المسافة (كم)", value=400.0)
+            # اختيار الولاية بالاسم الآن
+            start = st.selectbox("🚩 نقطة الانطلاق", wilayas_names, index=6)
+            end = st.selectbox("🏁 نقطة الوصول", wilayas_names, index=15)
+            dist = st.number_input("📏 المسافة الإجمالية (كم)", value=400.0)
             st.markdown("</div>", unsafe_allow_html=True)
         with c2:
             st.markdown("<div class='main-card'>", unsafe_allow_html=True)
             st.markdown("### 💰 المعطيات التقنية")
             wght = st.number_input("⚖️ الوزن الإجمالي (كغ)", value=1000.0)
-            fuel = st.number_input("⛽ سعر الوقود (د.ج)", value=29.1)
-            truck = st.selectbox("🚛 نوع الشاحنة", ["صغيرة", "متوسطة", "مقطورة دولية", "تبريد"])
+            fuel = st.number_input("⛽ سعر الوقود الحالي (د.ج)", value=29.1)
+            truck = st.selectbox("🚛 نوع الشاحنة المطلوبة", ["صغيرة", "متوسطة", "مقطورة دولية", "تبريد"])
             st.markdown("</div>", unsafe_allow_html=True)
 
     if st.button("💎 حساب التكلفة وتوليد التقارير"):
@@ -109,7 +144,7 @@ elif st.session_state.page == 'main':
         profit = (base + f_cost + maint) * 0.20
         total = base + f_cost + maint + profit
 
-        # 1. النتيجة الكبيرة
+        # عرض التكلفة النهائية
         st.markdown(f"""
             <div style="background: linear-gradient(45deg, #d4af37, #f4cf67); padding: 30px; border-radius: 20px; text-align: center; color: black; margin: 25px 0;">
                 <h2 style="margin:0;">💵 التكلفة الكلية المقدرة 💵</h2>
@@ -117,28 +152,33 @@ elif st.session_state.page == 'main':
             </div>
         """, unsafe_allow_html=True)
 
-        # 2. جدول هيكلة التكاليف (الذي كان مفقوداً)
+        # جدول هيكلة التكاليف
         st.markdown("### 📋 هيكلة التكاليف التفصيلية")
         st.table(pd.DataFrame({
-            "البند": ["⛽ تكلفة الوقود", "🔧 الصيانة", "🏗️ التشغيل", "📈 هامش الربح"],
+            "البند": ["⛽ تكلفة الوقود", "🔧 الصيانة والإهلاك", "🏗️ التشغيل والمسار", "📈 هامش الربح"],
             "القيمة (د.ج)": [f"{f_cost:,.2f}", f"{maint:,.2f}", f"{base:,.2f}", f"{profit:,.2f}"]
         }))
 
-        # 3. جدول المقارنة ودعم القرار (الذي كان مفقوداً)
+        # جدول المقارنة
         st.markdown("### 🔄 جدول المقارنة وتحليل السيناريوهات")
         comp = []
         for t, m in t_map.items():
             cost = ((dist * 0.7) + (w_t * 300)) * m + f_cost + (base * 0.12) + profit
             comp.append({"نوع الشاحنة": t, "الحالة": "مناسب ✅", "التكلفة الكلية (د.ج)": f"{cost:,.2f}"})
-        st.dataframe(pd.DataFrame(comp), use_container_width=True)
+        st.table(pd.DataFrame(comp)) # تحويل لجدول ثابت لزيادة الوضوح
 
-        st.info(f"💡 توصية النظام: الشاحنة ({truck}) هي الخيار الحالي المعتمد بناءً على مدخلاتك.")
+        # التوصية الذكية (تم تعديل اللون ليكون واضحاً)
+        st.markdown(f"""
+            <div class="recommendation-box">
+                💡 توصية النظام: الشاحنة ({truck}) هي الخيار الأنسب لحمولتك بناءً على المعايير الاقتصادية الحالية.
+            </div>
+        """, unsafe_allow_html=True)
 
-        # 4. نظام التقييم (الذي كان مفقوداً)
+        # نظام التقييم
         st.write("---")
         st.markdown("### 🧪 تقييم دقة النموذج")
-        eval_choice = st.radio("هل كانت النتيجة دقيقة؟", ("نعم، دقيقة جداً", "تحتاج تعديل", "غير دقيقة"))
+        eval_choice = st.radio("هل النتيجة دقيقة حسب تقديرك؟", ("نعم، دقيقة", "تحتاج تعديل", "غير دقيقة"))
         if st.button("إرسال التقييم 📩"):
-            st.success("شكراً لتقييمك! سيتم استخدامه لتحسين الشبكة العصبية.")
+            st.success("تم استلام التقييم، شكراً لك يا سهيل!")
 
     st.markdown("<div class='footer'>مشروع التخرج: سهيل عطالي - جامعة محمد خيضر بسكرة 2026</div>", unsafe_allow_html=True)
