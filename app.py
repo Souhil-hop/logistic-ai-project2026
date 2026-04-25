@@ -55,7 +55,8 @@ st.markdown("""
 
 # --- الصفحة الأولى: الواجهة الترحيبية ---
 if st.session_state.page == 'welcome':
-    st.markdown("""<style>.stApp { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=1500"); background-size: cover; background-position: center; }</style>""", unsafe_allow_html=True)
+    # تم تغيير الرابط هنا لصورة سفينة حاويات في البحر (لوجستيك) مضمونة الظهور
+    st.markdown("""<style>.stApp { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1577705998148-ebad7f3e9aff?q=80&w=1500"); background-size: cover; background-position: center; }</style>""", unsafe_allow_html=True)
     st.markdown("""
         <div style="text-align:center; margin-top:50px; padding:40px; background:rgba(0,0,0,0.85); border:3px solid #d4af37; border-radius:30px;">
             <h1 style="color:#d4af37; font-size:40px;">مرحباً بكم طلبة تخصص اللوجستيك والنقل الدولي 🎓</h1>
@@ -80,6 +81,7 @@ if st.session_state.page == 'welcome':
 
 # --- الصفحة الثانية: منصة التحليل ---
 elif st.session_state.page == 'main':
+    # خلفية المستودع اللوجستي للصفحة الثانية (تعمل بوضوح)
     st.markdown("""<style>.stApp { background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url("https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1500"); background-size: cover; }</style>""", unsafe_allow_html=True)
     
     if st.button("⬅️ رجوع"): go_to_welcome(); st.rerun()
@@ -92,7 +94,7 @@ elif st.session_state.page == 'main':
         st.markdown("### 📍 تفاصيل المسار")
         start = st.selectbox("🚩 نقطة الانطلاق", wilayas_names, index=6)
         end = st.selectbox("🏁 نقطة الوصول", wilayas_names, index=15)
-        # إدخال يدوي كما كان سابقاً
+        # إدخال يدوي كما هو مطلوب
         dist = st.number_input("📏 المسافة (كم)", value=500.0)
         st.markdown("</div>", unsafe_allow_html=True)
     with c2:
@@ -126,7 +128,7 @@ elif st.session_state.page == 'main':
         st.markdown("### 🔄 تحليل البدائل (جدول المقارنة)")
         st.table(pd.DataFrame(comparison))
 
-        # التقييم بخمس نجوم
+        # التقييم بخمس نجوم (موجود ويعمل)
         st.write("---")
         st.subheader("⭐ تقييم دقة التنبؤ")
         st.feedback("stars")
