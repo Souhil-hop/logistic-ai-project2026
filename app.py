@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # 1. إعداد الصفحة الأساسي
-st.set_page_config(page_title="نظام سهيل للتنبؤ اللوجستي", layout="wide")
+st.set_page_config(page_title="نظام التنبؤ اللوجستي الذكي - جامعة بسكرة", layout="wide")
 
 # 2. إدارة التنقل بين الصفحات
 if 'page' not in st.session_state:
@@ -11,7 +11,7 @@ if 'page' not in st.session_state:
 def go_to_main(): st.session_state.page = 'main'
 def go_to_welcome(): st.session_state.page = 'welcome'
 
-# قائمة الولايات الـ 58 كاملة كما كانت
+# قائمة الولايات الـ 58
 wilayas_names = [
     "01. أدرار", "02. الشلف", "03. الأغواط", "04. أم البواقي", "05. باتنة", 
     "06. بجاية", "07. بسكرة", "08. بشار", "09. البليدة", "10. البويرة", 
@@ -27,10 +27,10 @@ wilayas_names = [
     "56. جانت", "57. المغير", "58. المنيعة"
 ]
 
-# --- كود CSS النهائي (الحفاظ على المستطيل الأسود الغامق والخطوط الكبيرة) ---
+# --- كود CSS النهائي والفخم ---
 st.markdown("""
     <style>
-    /* المستطيل الأسود الذي أشرت إليه - غامق جداً وبإطار ذهبي */
+    /* المستطيل الأسود الغامق جداً وبإطار ذهبي */
     div[data-testid="stVerticalBlock"] > div[style*="background-color"] {
         background-color: rgba(0, 0, 0, 0.95) !important;
         border: 2px solid #d4af37 !important;
@@ -38,67 +38,50 @@ st.markdown("""
         padding: 25px;
     }
     
-    /* الخطوط: بيضاء، كبيرة، وواضحة جداً */
-    .stApp, .stMarkdown, p, label { 
-        color: #FFFFFF !important; 
-        font-size: 20px !important; 
-        font-weight: 500 !important;
-    }
+    .stApp, .stMarkdown, p, label { color: #FFFFFF !important; font-size: 20px !important; }
     
-    /* الجداول الاحترافية */
-    .stTable { 
-        background-color: rgba(0, 0, 0, 0.85) !important; 
-        border: 2px solid #d4af37 !important;
-        border-radius: 12px;
-    }
-    th { color: #d4af37 !important; font-size: 20px !important; background-color: rgba(0,0,0,0.9) !important; }
-    td { color: #ffffff !important; font-size: 18px !important; }
-
-    /* بطاقة النتيجة (نص أسود عريض على خلفية ذهبية ناصعة) */
+    /* بطاقة النتيجة (نص أسود عريض على خلفية ذهبية) */
     .result-card {
         background: linear-gradient(45deg, #d4af37, #f4cf67);
-        padding: 30px; border-radius: 20px; text-align: center;
+        padding: 35px; border-radius: 20px; text-align: center;
         border: 2px solid #ffffff; margin-bottom: 25px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
-    .result-card h1 { color: #000000 !important; font-size: 55px !important; font-weight: 900 !important; margin: 5px 0; }
-    .result-card h2 { color: #000000 !important; font-size: 28px !important; font-weight: bold !important; margin: 5px 0; }
-    .result-card h3 { color: #000000 !important; font-size: 22px !important; font-weight: bold !important; margin: 5px 0; }
+    .result-card h1 { color: #000000 !important; font-size: 55px !important; font-weight: 900 !important; }
+    .result-card h2 { color: #000000 !important; font-size: 28px !important; font-weight: bold !important; }
+    .result-card h3 { color: #000000 !important; font-size: 22px !important; font-weight: bold !important; }
 
-    .recommendation-box {
-        background-color: rgba(212, 175, 55, 0.25);
-        border: 2px solid #d4af37;
-        padding: 20px; border-radius: 15px; color: #ffffff;
-        text-align: center; font-weight: bold; font-size: 20px; margin: 20px 0;
-    }
+    .stTable { background-color: rgba(0, 0, 0, 0.85) !important; border: 2px solid #d4af37 !important; border-radius: 12px; }
+    th { color: #d4af37 !important; font-size: 20px !important; }
 
-    .main-card {
-        background: rgba(0, 0, 0, 0.8); padding: 25px; border-radius: 15px;
-        border-right: 5px solid #d4af37; margin-bottom: 20px;
-    }
+    .main-card { background: rgba(0, 0, 0, 0.8); padding: 25px; border-radius: 15px; border-right: 5px solid #d4af37; margin-bottom: 20px; }
 
-    /* تأثير التلاشي الكلاسيكي */
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     .stApp { animation: fadeIn 1s ease-in; }
     </style>
 """, unsafe_allow_html=True)
 
-# --- الصفحة الأولى: الواجهة الترحيبية (النص الدائم) ---
+# --- الصفحة الأولى: الواجهة الترحيبية (بأسماء المجموعة كاملة) ---
 if st.session_state.page == 'welcome':
     st.markdown("""<style>.stApp { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1524522173746-f628baad3644?q=80&w=1500"); background-size: cover; }</style>""", unsafe_allow_html=True)
     st.markdown("""
         <div style="text-align:center; margin-top:50px; padding:40px; background:rgba(0,0,0,0.85); border:3px solid #d4af37; border-radius:30px;">
-            <h1 style="color:#d4af37; font-size:45px;">أهلاً بطلبة تخصص اللوجستيك والنقل الدولي 🎓</h1>
-            <h2 style="color:white;">جامعة محمد خيضر بسكرة</h2>
+            <h1 style="color:#d4af37; font-size:45px;">أهلاً بكم في منصة التنبؤ اللوجستي الذكية 🎓</h1>
+            <h2 style="color:white;">جامعة محمد خيضر بسكرة - كلية العلوم والتكنولوجيا</h2>
             <hr style="border-color:#d4af37;">
             <p style="font-size:22px; color:#ffffff; line-height:1.6;">
-                <b>عنوان المشروع:</b> بناء نموذج شبكة عصبية اصطناعية باستخدام مكتبة <b>Keras</b> للتنبؤ بتكاليف النقل اللوجستي.<br>
-                النظام يحلل المسافات والأوزان عبر 58 ولاية جزائرية بدقة الذكاء الاصطناعي لدعم القرار الاستراتيجي.
+                <b>مشروع التخرج:</b> بناء نموذج شبكة عصبية اصطناعية باستخدام مكتبة <b>Keras</b> للتنبؤ بتكاليف النقل اللوجستي.<br>
+                تحليل ذكي للمسافات والأوزان لتعزيز كفاءة النقل عبر 58 ولاية جزائرية.
             </p>
-            <h3 style="color:#d4af37;">إعداد الطالب: سهيل عطالي</h3>
+            <h3 style="color:#d4af37; margin-top:20px;">إعداد الطلبة:</h3>
+            <div style="background:rgba(212,175,55,0.1); padding:15px; border-radius:15px; border:1px solid #d4af37;">
+                <p style="font-size:26px; font-weight:bold; color:white; margin:0;">
+                    سهيل عطالي | محمد الحسين موسي | عبد الله سايب
+                </p>
+            </div>
         </div>
     """, unsafe_allow_html=True)
-    if st.button("🚀 الدخول إلى منصة التنبؤ الذكية"):
+    if st.button("🚀 الدخول إلى منصة التحليل الجماعي"):
         go_to_main(); st.rerun()
 
 # --- الصفحة الثانية: منصة التحليل ---
@@ -107,29 +90,26 @@ elif st.session_state.page == 'main':
     
     if st.button("⬅️ رجوع"): go_to_welcome(); st.rerun()
 
-    st.markdown("<h1 style='text-align:center; color:#d4af37;'>📊 منصة التحليل ودعم القرار اللوجستي</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align:center; color:#d4af37;'>📊 منصة دعم القرار اللوجستي - عمل جماعي</h1>", unsafe_allow_html=True)
 
     c1, c2 = st.columns(2)
     with c1:
         st.markdown("<div class='main-card'>", unsafe_allow_html=True)
-        st.markdown("### 📍 مسار الرحلة")
+        st.markdown("### 📍 تفاصيل المسار")
         start = st.selectbox("🚩 نقطة الانطلاق", wilayas_names, index=6)
         end = st.selectbox("🏁 نقطة الوصول", wilayas_names, index=15)
-        dist = st.number_input("📏 المسافة الإجمالية (كم)", value=500.0)
+        dist = st.number_input("📏 المسافة (كم)", value=500.0)
         st.markdown("</div>", unsafe_allow_html=True)
     with c2:
         st.markdown("<div class='main-card'>", unsafe_allow_html=True)
-        st.markdown("### 💰 المعطيات التقنية")
-        cargo_type = st.selectbox("📦 نوع البضاعة المشحونة", [
-            "مواد غذائية واستهلاكية", "تجهيزات ومعدات صناعية", "مواد أولية وبناء", 
-            "أجهزة إلكترونية وكهرومنزلي", "أدوية ومستلزمات طبية", "منتجات طازجة (تبريد)"
-        ])
+        st.markdown("### 💰 معطيات الشحنة")
+        cargo_type = st.selectbox("📦 نوع البضاعة", ["مواد غذائية واستهلاكية", "تجهيزات ومعدات صناعية", "مواد أولية وبناء", "أجهزة إلكترونية", "أدوية ومستلزمات طبية"])
         wght = st.number_input("⚖️ الوزن الإجمالي (كغ)", value=3000.0)
         fuel = st.number_input("⛽ سعر الوقود الحالي (د.ج)", value=29.10)
         truck_type = st.selectbox("🚛 النوع المطلوب", ["صغيرة", "متوسطة", "مقطورة دولية", "تبريد"])
         st.markdown("</div>", unsafe_allow_html=True)
 
-    if st.button("💎 حساب وتوليد التقرير النهائي"):
+    if st.button("💎 توليد تقرير التنبؤ النهائي"):
         truck_specs = {
             "صغيرة": {"cap": 1500, "factor": 1.0, "speed": 80},
             "متوسطة": {"cap": 5000, "factor": 1.4, "speed": 70},
@@ -137,57 +117,50 @@ elif st.session_state.page == 'main':
             "مقطورة دولية": {"cap": 25000, "factor": 2.8, "speed": 60}
         }
         
-        # حساب التكلفة المباشرة
         spec = truck_specs[truck_type]
         base = ((dist * 0.8) + ((wght/1000) * 400)) * spec["factor"]
         fuel_c = (dist / 5) * fuel
         total = (base + fuel_c + (base * 0.12)) * 1.20
-
-        # حساب الوقت (المسافة / السرعة + 1 ساعة استراحة لكل 300 كم)
         travel_hours = (dist / spec["speed"]) + (dist // 300)
 
-        # عرض النتيجة والوقت في الإطار الذهبي بخط أسود واضح
         st.markdown(f"""
             <div class="result-card">
                 <h3>التكلفة المقدرة لنقل ({cargo_type})</h3>
                 <h1>{total:,.2f} د.ج</h1>
-                <h2>🕒 الوقت المتوقع: {travel_hours:.1f} ساعة</h2>
+                <h2>🕒 الوقت المتوقع للرحلة: {travel_hours:.1f} ساعة</h2>
             </div>
         """, unsafe_allow_html=True)
 
-        # التقرير التفصيلي (البند والقيمة)
-        st.markdown(f"### 📋 تفاصيل تكلفة الرحلة")
-        st.table(pd.DataFrame({"البند": ["⛽ الوقود", "🔧 الصيانة", "🏗️ التشغيل والمسار", "📈 هامش الربح"], "القيمة (د.ج)": [f"{fuel_c:,.2f}", f"{(base*0.12):,.2f}", f"{base:,.2f}", f"{(total*0.2):,.2f}"]}))
+        st.markdown("### 📋 التقرير التفصيلي للتكاليف")
+        st.table(pd.DataFrame({"البند": ["⛽ الوقود", "🔧 الصيانة", "🏗️ التشغيل", "📈 الربح المتوقع"], "القيمة (د.ج)": [f"{fuel_c:,.2f}", f"{(base*0.12):,.2f}", f"{base:,.2f}", f"{(total*0.2):,.2f}"]}))
 
-        # جدول المقارنة وتحليل السيناريوهات
         comparison = []
         valid_options = {}
         for name, s in truck_specs.items():
             cost = (((dist * 0.8) + ((wght/1000) * 400)) * s["factor"] + (dist/5)*fuel) * 1.32
             status = "✅ مناسب" if wght <= s["cap"] else "❌ حمولة زائدة"
-            comparison.append({"وسيلة النقل": name, "حالة الحمولة": status, "التكلفة التقديرية": f"{cost:,.2f}"})
+            comparison.append({"الوسيلة": name, "الحالة": status, "التكلفة التقديرية": f"{cost:,.2f}"})
             if wght <= s["cap"]: valid_options[name] = cost
 
-        st.markdown("### 🔄 تحليل السيناريوهات والبدائل المتاحة")
+        st.markdown("### 🔄 تحليل السيناريوهات والبدائل")
         st.table(pd.DataFrame(comparison))
 
-        # التوصية اللوجستية الذكية
-        best_v = min(valid_options, key=valid_options.get) if valid_options else "غير متوفر"
-        st.markdown(f'<div class="recommendation-box">💡 التوصية اللوجستية: بناءً على تحليل الوزن والتكلفة، فإن الخيار ({best_v}) هو الأنسب لهذه الرحلة.</div>', unsafe_allow_html=True)
-
-        # زر إرسال التقرير النهائي (الجديد)
         st.write("---")
-        if st.button("📤 إرسال التقرير النهائي للعميل"):
-            st.success("تم توليد التقرير القابل للإرسال بنجاح!")
+        if st.button("📤 إرسال التقرير النهائي (PDF/Image Ready)"):
+            st.success("تم إعداد الجدول النهائي القابل للمشاركة!")
+            best_v = min(valid_options, key=valid_options.get) if valid_options else "غير محدد"
             report_data = {
-                "المعلومة اللوجستية": ["نوع البضاعة", "المسافة المقطوعة", "الوزن المشحون", "الوسيلة المقترحة", "الوقت المستغرق", "التكلفة النهائية"],
-                "التفاصيل": [cargo_type, f"{dist} كم", f"{wght} كغ", best_v, f"{travel_hours:.1f} ساعة", f"{total:,.2f} د.ج"]
+                "البيان": ["نوع البضاعة", "الوزن", "المسافة", "الوسيلة الأفضل", "الوقت", "التكلفة الكلية"],
+                "القيمة": [cargo_type, f"{wght} كغ", f"{dist} كم", best_v, f"{travel_hours:.1f} ساعة", f"{total:,.2f} د.ج"]
             }
             st.table(pd.DataFrame(report_data))
-            st.info("الجدول أعلاه جاهز للمشاركة كملخص رسمي للنتائج.")
 
-        # تقييم دقة النموذج
         st.write("---")
-        st.radio("📊 تقييم دقة التنبؤ للشبكة العصبية لهذا المسار:", ["دقيق جداً ✅", "متوسط الدقة ⚠️", "يحتاج مراجعة ❌"], horizontal=True)
+        st.radio("📊 تقييم دقة تنبؤ النموذج الجماعي:", ["دقيق جداً ✅", "مقبول ⚠️", "غير دقيق ❌"], horizontal=True)
 
-    st.markdown("<p style='text-align:center; color:#d4af37; font-weight:bold; margin-top:50px;'>سهيل عطالي - جامعة بسكرة 2026</p>", unsafe_allow_html=True)
+    st.markdown(f"""
+        <div style="text-align:center; color:#d4af37; font-weight:bold; margin-top:50px; border-top:1px solid #d4af37; padding-top:20px;">
+            إعداد الطلبة: سهيل عطالي | محمد الحسين موسي | عبد الله سايب <br>
+            جامعة محمد خيضر بسكرة - دفعة 2026
+        </div>
+    """, unsafe_allow_html=True)
