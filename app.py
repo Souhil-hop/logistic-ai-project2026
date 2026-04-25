@@ -1,7 +1,7 @@
-Import streamlit as st
+import streamlit as st
 import pandas as pd
 
-# 1. إعداد الصفحة الأساسي (لتثبيت العنوان الرسمي للرابط)
+# 1. إعداد الصفحة الأساسي
 st.set_page_config(
     page_title="منصة التنبؤ بتكاليف النقل اللوجستي", 
     page_icon="📊",
@@ -31,7 +31,7 @@ wilayas_names = [
     "56. جانت", "57. المغير", "58. المنيعة"
 ]
 
-# --- كود CSS (المستطيل الغامق جداً وبإطار ذهبي) ---
+# --- كود CSS (التنسيق الذي تفضله) ---
 st.markdown("""
     <style>
     div[data-testid="stVerticalBlock"] > div[style*="background-color"] {
@@ -55,7 +55,7 @@ st.markdown("""
 
 # --- الصفحة الأولى: الواجهة الترحيبية ---
 if st.session_state.page == 'welcome':
-    st.markdown("""<style>.stApp { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1524522173746-f628baad3644?q=80&w=1500"); background-size: cover; }</style>""", unsafe_allow_html=True)
+    st.markdown("""<style>.stApp { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=1500"); background-size: cover; background-position: center; }</style>""", unsafe_allow_html=True)
     st.markdown("""
         <div style="text-align:center; margin-top:50px; padding:40px; background:rgba(0,0,0,0.85); border:3px solid #d4af37; border-radius:30px;">
             <h1 style="color:#d4af37; font-size:40px;">مرحباً بكم طلبة تخصص اللوجستيك والنقل الدولي 🎓</h1>
@@ -64,7 +64,7 @@ if st.session_state.page == 'welcome':
             <div style="margin:30px 0;">
                 <h3 style="color:#d4af37; font-size:28px;">ماهي المنصة؟</h3>
                 <p style="font-size:22px; color:#ffffff; line-height:1.6;">
-                    المنصة عبارة عن نموذج لشبكة عصبية إصطناعية باستخدام مكتبة <b>keras</b> لللتنبؤ بتكاليف النقل اللوجستي.
+                    المنصة عبارة عن نموذج لشبكة عصبية إصطناعية باستخدام مكتبة <b>keras</b> للتنبؤ بتكاليف النقل اللوجستي.
                 </p>
             </div>
             <h3 style="color:#d4af37;">إعداد طلبة أولى ماستر لوجستيك ونقل دولي:</h3>
@@ -92,6 +92,7 @@ elif st.session_state.page == 'main':
         st.markdown("### 📍 تفاصيل المسار")
         start = st.selectbox("🚩 نقطة الانطلاق", wilayas_names, index=6)
         end = st.selectbox("🏁 نقطة الوصول", wilayas_names, index=15)
+        # العودة للمدخل اليدوي للمسافة
         dist = st.number_input("📏 المسافة (كم)", value=500.0)
         st.markdown("</div>", unsafe_allow_html=True)
     with c2:
@@ -125,11 +126,10 @@ elif st.session_state.page == 'main':
         st.markdown("### 🔄 تحليل البدائل (جدول المقارنة)")
         st.table(pd.DataFrame(comparison))
 
+        # التقييم بخمس نجوم
         st.write("---")
-        if st.button("📤 إرسال التقرير النهائي (PDF/Image Ready)"):
-            st.success("تم إعداد الجدول النهائي القابل للمشاركة!")
-            report_data = {"البيان": ["النوع", "الوزن", "المسافة", "الوقت", "التكلفة الكلية"], "القيمة": [cargo_type, f"{wght} كغ", f"{dist} كم", f"{travel_hours:.1f} ساعة", f"{total:,.2f} د.ج"]}
-            st.table(pd.DataFrame(report_data))
+        st.subheader("⭐ تقييم دقة التنبؤ")
+        st.feedback("stars")
 
     st.markdown(f"""
         <div style="text-align:center; color:#d4af37; font-weight:bold; margin-top:20px; border-top:1px solid #d4af37; padding-top:20px;">
