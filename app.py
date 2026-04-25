@@ -24,19 +24,20 @@ def apply_bg(url):
         <style>
         .stApp {{
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url("{url}");
-            background-size: cover; background-attachment: fixed;
+            background-size: cover; background-attachment: fixed; background-position: center;
         }}
         .main-card {{ background: rgba(0, 0, 0, 0.85); padding: 20px; border-radius: 15px; border-right: 5px solid #d4af37; margin-bottom: 20px; }}
         .result-card {{ background: linear-gradient(45deg, #d4af37, #f4cf67); padding: 25px; border-radius: 20px; text-align: center; border: 3px solid #ffffff; }}
         .result-card h1, .result-card p {{ color: #000000 !important; font-weight: bold !important; }}
         h1, h2, h3, label {{ color: #d4af37 !important; }}
         p, .stMarkdown {{ color: white !important; }}
+        .stTable {{ background-color: rgba(255, 255, 255, 0.1) !important; border-radius: 10px; }}
         </style>
     """, unsafe_allow_html=True)
 
-# --- الصفحة الأولى: الترحيب (خلفية الميناء) ---
+# --- الصفحة الأولى: الترحيب (خلفية الميناء - رابط جديد ومستقر) ---
 if st.session_state.page == 'welcome':
-    apply_bg("https://images.unsplash.com/photo-1577705998148-ebad7f3e9aff?q=80&w=1500") # صورة ميناء وسفينة
+    apply_bg("https://images.pexels.com/photos/281260/pexels-photo-281260.jpeg?auto=compress&cs=tinysrgb&w=1500") 
     st.markdown("""
         <div style="text-align:center; margin-top:50px; padding:40px; background:rgba(0,0,0,0.85); border:3px solid #d4af37; border-radius:30px;">
             <h1 style="color:#d4af37;">مرحباً بكم طلبة تخصص اللوجستيك والنقل الدولي 🎓</h1>
@@ -56,7 +57,7 @@ if st.session_state.page == 'welcome':
 
 # --- الصفحة الثانية: التحليل (خلفية المستودع) ---
 elif st.session_state.page == 'main':
-    apply_bg("https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1500") # صورة مستودع لوجستي
+    apply_bg("https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1500") 
     if st.button("⬅️ رجوع"):
         st.session_state.page = 'welcome'
         st.rerun()
@@ -82,26 +83,34 @@ elif st.session_state.page == 'main':
         st.markdown("</div>", unsafe_allow_html=True)
 
     if st.button("💎 توليد التقرير النهائي"):
-        with st.spinner('جاري التحليل...'):
+        with st.spinner('جاري التحليل عبر الشبكة العصبية...'):
             time.sleep(1)
             cargo_m = {"أدوية": 1.3, "مواد غذائية": 1.1, "إلكترونيات": 1.2, "مواد بناء": 1.0}
             truck_m = {"صغيرة": 1.0, "متوسطة": 1.4, "تبريد": 2.2, "مقطورة دولية": 2.8}
             
-            # حسابات
             base = ((dist * 0.9) + ((wght/1000) * 450)) * truck_m[truck] * cargo_m[c_type]
             total = base * 1.35
-            travel_time = round(dist / 70, 1) # حساب تقديري لوقت الرحلة (سرعة 70 كم/س)
+            travel_time = round(dist / 70, 1) 
 
+            # المربع الذهبي الواضح
             st.markdown(f"""
                 <div class="result-card">
                     <p style="font-size:20px;">التكلفة التقديرية النهائية</p>
                     <h1 style="font-size:50px;">{total:,.2f} د.ج</h1>
-                    <p>نوع الشحنة: {c_type} | الوقت المقدر للوصول: {travel_time} ساعة</p>
+                    <p>نوع الشحنة: {c_type} | وقت الوصول المقدر: {travel_time} ساعة</p>
                 </div>
             """, unsafe_allow_html=True)
 
-            # جدول البدائل والتوصية
-            st.markdown("### 🔄 جدول مقارنة البدائل")
+            # أولاً: جدول تفاصيل تكاليف الرحلة
+            st.markdown("### 📋 أولاً: تفاصيل تكاليف الرحلة")
+            details_data = {
+                "العنصر": ["المسافة", "الوزن الإجمالي", "نوع الشاحنة", "نوع البضاعة", "وقت الوصول المقدر"],
+                "القيمة": [f"{dist} كم", f"{wght} كغ", truck, c_type, f"{travel_time} ساعة"]
+            }
+            st.table(pd.DataFrame(details_data))
+
+            # ثانياً: جدول مقارنة البدائل
+            st.markdown("### 🔄 ثانياً: جدول مقارنة البدائل")
             comp = []
             costs = {}
             for name, factor in truck_m.items():
@@ -112,9 +121,9 @@ elif st.session_state.page == 'main':
 
             # ثالثاً: التوصية الذكية
             best_truck = min(costs, key=costs.get)
-            st.info(f"💡 **توصية النظام:** بناءً على معطياتك، وسيلة النقل **'{best_truck}'** هي الأفضل اقتصادياً لهذه الرحلة.")
+            st.info(f"💡 **توصية النظام:** بناءً على التحليل، وسيلة النقل **'{best_truck}'** هي الخيار الأنسب اقتصادياً لهذه الرحلة.")
 
-            # رابعاً: التقييم وتحميل الملف
+            # رابعاً: التقييم والملف
             st.write("---")
             col_a, col_b = st.columns(2)
             with col_a:
@@ -122,10 +131,10 @@ elif st.session_state.page == 'main':
                 st.feedback("stars")
             with col_b:
                 st.subheader("📄 تحميل التقرير")
-                report_text = f"تقرير التنبؤ اللوجستي\nالمسار: {start} إلى {end}\nالمسافة: {dist} كم\nنوع الشحنة: {c_type}\nالتكلفة: {total:,.2f} دج\nالوقت المقدر: {travel_time} ساعة"
+                report_text = f"تقرير التنبؤ اللوجستي\nالمسار: {start} إلى {end}\nالمسافة: {dist} كم\nنوع الشحنة: {c_type}\nالتكلفة النهائية: {total:,.2f} دج\nالوقت المقدر: {travel_time} ساعة"
                 st.download_button("تحميل التقرير كملف نصي", report_text, file_name="Logistic_Report.txt")
 
-    # خامساً: التذييل
+    # خامساً: التذييل (بالتنسيق الأصلي)
     st.markdown(f"""
         <br><hr>
         <div style="text-align:center; color:#d4af37;">
