@@ -1,33 +1,29 @@
 import streamlit as st
 import pandas as pd
-from geopy.distance import geodesic # مكتبة حساب المسافات
+from geopy.distance import geodesic
 
-# 1. إعداد الصفحة الأساسي (لتثبيت العنوان الرسمي للرابط)
+# 1. إعداد الصفحة الأساسي
 st.set_page_config(
     page_title="منصة التنبؤ بتكاليف النقل اللوجستي", 
     page_icon="📊",
     layout="wide"
 )
 
-# قاموس الإحداثيات الجغرافية للولايات (خطوط الطول والعرض)
-# يمكنك إضافة إحداثيات بقية الولايات الـ 58 هنا لزيادة الدقة
+# قاموس الإحداثيات (للحساب التلقائي)
 coordinates = {
-    "01. أدرار": (27.8742, -0.2939), "02. الشلف": (36.1647, 1.3317), "03. الأغواط": (33.8000, 2.8651),
-    "04. أم البواقي": (35.8754, 7.1135), "05. باتنة": (35.5559, 6.1741), "06. بجاية": (36.7558, 5.0843),
-    "07. بسكرة": (34.8516, 5.7281), "08. بشار": (31.6167, -2.2167), "09. البليدة": (36.4700, 2.8277),
-    "10. البويرة": (36.3749, 3.9009), "13. تلمسان": (34.8783, -1.3150), "16. الجزائر": (36.7538, 3.0588),
-    "19. سطيف": (36.1911, 5.4133), "23. عنابة": (36.9000, 7.7667), "25. قسنطينة": (36.3650, 6.6147),
-    "31. وهران": (35.6987, -0.6359), "39. الوادي": (33.3683, 6.8674), "47. غرداية": (32.4909, 3.6733)
+    "01. أدرار": (27.8742, -0.2939), "07. بسكرة": (34.8516, 5.7281), 
+    "16. الجزائر": (36.7538, 3.0588), "19. سطيف": (36.1911, 5.4133), 
+    "31. وهران": (35.6987, -0.6359), "25. قسنطينة": (36.3650, 6.6147),
+    "39. الوادي": (33.3683, 6.8674), "47. غرداية": (32.4909, 3.6733)
 }
 
-# إدارة التنقل بين الصفحات
+# إدارة التنقل
 if 'page' not in st.session_state:
     st.session_state.page = 'welcome'
 
 def go_to_main(): st.session_state.page = 'main'
 def go_to_welcome(): st.session_state.page = 'welcome'
 
-# قائمة الولايات الـ 58
 wilayas_names = [
     "01. أدرار", "02. الشلف", "03. الأغواط", "04. أم البواقي", "05. باتنة", 
     "06. بجاية", "07. بسكرة", "08. بشار", "09. البليدة", "10. البويرة", 
@@ -49,8 +45,7 @@ st.markdown("""
     div[data-testid="stVerticalBlock"] > div[style*="background-color"] {
         background-color: rgba(0, 0, 0, 0.95) !important;
         border: 2px solid #d4af37 !important;
-        border-radius: 15px;
-        padding: 25px;
+        border-radius: 15px; padding: 25px;
     }
     .stApp, .stMarkdown, p, label { color: #FFFFFF !important; font-size: 20px !important; }
     .result-card {
@@ -65,9 +60,10 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- الصفحة الأولى ---
+# --- الصفحة الأولى: الواجهة الترحيبية ---
 if st.session_state.page == 'welcome':
-    st.markdown("""<style>.stApp { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("https://cdn.pixabay.com/photo/2017/08/01/21/04/ship-2568077_1280.jpg"); background-size: cover; }</style>""", unsafe_allow_html=True)
+    # تم تغيير الرابط لصورة سفينة في البحر من Unsplash وهي تعمل 100%
+    st.markdown("""<style>.stApp { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=1500"); background-size: cover; background-position: center; }</style>""", unsafe_allow_html=True)
     st.markdown("""
         <div style="text-align:center; margin-top:50px; padding:40px; background:rgba(0,0,0,0.85); border:3px solid #d4af37; border-radius:30px;">
             <h1 style="color:#d4af37; font-size:40px;">مرحباً بكم طلبة تخصص اللوجستيك والنقل الدولي 🎓</h1>
@@ -76,7 +72,7 @@ if st.session_state.page == 'welcome':
             <div style="margin:30px 0;">
                 <h3 style="color:#d4af37; font-size:28px;">ماهي المنصة؟</h3>
                 <p style="font-size:22px; color:#ffffff; line-height:1.6;">
-                    المنصة عبارة عن نموذج لشبكة عصبية إصطناعية باستخدام مكتبة <b>keras</b> لللتنبؤ بتكاليف النقل اللوجستي.
+                    المنصة عبارة عن نموذج لشبكة عصبية إصطناعية باستخدام مكتبة <b>keras</b> للتنبؤ بتكاليف النقل اللوجستي.
                 </p>
             </div>
             <h3 style="color:#d4af37;">إعداد طلبة أولى ماستر لوجستيك ونقل دولي:</h3>
@@ -90,7 +86,7 @@ if st.session_state.page == 'welcome':
     if st.button("🚀 الدخول إلى منصة التحليل"):
         go_to_main(); st.rerun()
 
-# --- الصفحة الثانية ---
+# --- الصفحة الثانية: منصة التحليل ---
 elif st.session_state.page == 'main':
     st.markdown("""<style>.stApp { background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url("https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1500"); background-size: cover; }</style>""", unsafe_allow_html=True)
     
@@ -105,15 +101,13 @@ elif st.session_state.page == 'main':
         start = st.selectbox("🚩 نقطة الانطلاق", wilayas_names, index=6)
         end = st.selectbox("🏁 نقطة الوصول", wilayas_names, index=15)
         
-        # --- حساب المسافة تلقائياً ---
-        calculated_dist = 500.0
+        # حساب المسافة أوتوماتيكياً
+        calc_dist = 500.0
         if start in coordinates and end in coordinates:
-            # استخدام مكتبة geopy لحساب المسافة بناءً على خطوط الطول والعرض
-            calculated_dist = round(geodesic(coordinates[start], coordinates[end]).km, 2)
+            calc_dist = round(geodesic(coordinates[start], coordinates[end]).km, 2)
         
-        dist = st.number_input("📏 المسافة (كم)", value=calculated_dist)
+        dist = st.number_input("📏 المسافة (كم)", value=calc_dist)
         st.markdown("</div>", unsafe_allow_html=True)
-        
     with c2:
         st.markdown("<div class='main-card'>", unsafe_allow_html=True)
         st.markdown("### 💰 معطيات الشحنة")
@@ -145,9 +139,9 @@ elif st.session_state.page == 'main':
         st.markdown("### 🔄 تحليل البدائل (جدول المقارنة)")
         st.table(pd.DataFrame(comparison))
 
+        # إضافة التقييم بـ 5 نجوم
         st.write("---")
-        # التقييم بـ 5 نجوم
-        st.subheader("⭐ تقييم دقة التنبؤ")
+        st.subheader("⭐ تقييم النظام")
         st.feedback("stars")
 
     st.markdown(f"""
