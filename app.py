@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from geopy.distance import geodesic # مكتبة حساب المسافات
 
 # 1. إعداد الصفحة الأساسي (لتثبيت العنوان الرسمي للرابط)
 st.set_page_config(
@@ -7,6 +8,17 @@ st.set_page_config(
     page_icon="📊",
     layout="wide"
 )
+
+# قاموس الإحداثيات الجغرافية للولايات (خطوط الطول والعرض)
+# يمكنك إضافة إحداثيات بقية الولايات الـ 58 هنا لزيادة الدقة
+coordinates = {
+    "01. أدرار": (27.8742, -0.2939), "02. الشلف": (36.1647, 1.3317), "03. الأغواط": (33.8000, 2.8651),
+    "04. أم البواقي": (35.8754, 7.1135), "05. باتنة": (35.5559, 6.1741), "06. بجاية": (36.7558, 5.0843),
+    "07. بسكرة": (34.8516, 5.7281), "08. بشار": (31.6167, -2.2167), "09. البليدة": (36.4700, 2.8277),
+    "10. البويرة": (36.3749, 3.9009), "13. تلمسان": (34.8783, -1.3150), "16. الجزائر": (36.7538, 3.0588),
+    "19. سطيف": (36.1911, 5.4133), "23. عنابة": (36.9000, 7.7667), "25. قسنطينة": (36.3650, 6.6147),
+    "31. وهران": (35.6987, -0.6359), "39. الوادي": (33.3683, 6.8674), "47. غرداية": (32.4909, 3.6733)
+}
 
 # إدارة التنقل بين الصفحات
 if 'page' not in st.session_state:
@@ -31,7 +43,7 @@ wilayas_names = [
     "56. جانت", "57. المغير", "58. المنيعة"
 ]
 
-# --- كود CSS (المستطيل الغامق جداً وبإطار ذهبي) ---
+# --- كود CSS ---
 st.markdown("""
     <style>
     div[data-testid="stVerticalBlock"] > div[style*="background-color"] {
@@ -53,9 +65,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- الصفحة الأولى: الواجهة الترحيبية ---
+# --- الصفحة الأولى ---
 if st.session_state.page == 'welcome':
-    st.markdown("""<style>.stApp { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1524522173746-f628baad3644?q=80&w=1500"); background-size: cover; }</style>""", unsafe_allow_html=True)
+    st.markdown("""<style>.stApp { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("https://cdn.pixabay.com/photo/2017/08/01/21/04/ship-2568077_1280.jpg"); background-size: cover; }</style>""", unsafe_allow_html=True)
     st.markdown("""
         <div style="text-align:center; margin-top:50px; padding:40px; background:rgba(0,0,0,0.85); border:3px solid #d4af37; border-radius:30px;">
             <h1 style="color:#d4af37; font-size:40px;">مرحباً بكم طلبة تخصص اللوجستيك والنقل الدولي 🎓</h1>
@@ -78,7 +90,7 @@ if st.session_state.page == 'welcome':
     if st.button("🚀 الدخول إلى منصة التحليل"):
         go_to_main(); st.rerun()
 
-# --- الصفحة الثانية: منصة التحليل ---
+# --- الصفحة الثانية ---
 elif st.session_state.page == 'main':
     st.markdown("""<style>.stApp { background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url("https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1500"); background-size: cover; }</style>""", unsafe_allow_html=True)
     
@@ -92,8 +104,16 @@ elif st.session_state.page == 'main':
         st.markdown("### 📍 تفاصيل المسار")
         start = st.selectbox("🚩 نقطة الانطلاق", wilayas_names, index=6)
         end = st.selectbox("🏁 نقطة الوصول", wilayas_names, index=15)
-        dist = st.number_input("📏 المسافة (كم)", value=500.0)
+        
+        # --- حساب المسافة تلقائياً ---
+        calculated_dist = 500.0
+        if start in coordinates and end in coordinates:
+            # استخدام مكتبة geopy لحساب المسافة بناءً على خطوط الطول والعرض
+            calculated_dist = round(geodesic(coordinates[start], coordinates[end]).km, 2)
+        
+        dist = st.number_input("📏 المسافة (كم)", value=calculated_dist)
         st.markdown("</div>", unsafe_allow_html=True)
+        
     with c2:
         st.markdown("<div class='main-card'>", unsafe_allow_html=True)
         st.markdown("### 💰 معطيات الشحنة")
@@ -126,10 +146,9 @@ elif st.session_state.page == 'main':
         st.table(pd.DataFrame(comparison))
 
         st.write("---")
-        if st.button("📤 إرسال التقرير النهائي (PDF/Image Ready)"):
-            st.success("تم إعداد الجدول النهائي القابل للمشاركة!")
-            report_data = {"البيان": ["النوع", "الوزن", "المسافة", "الوقت", "التكلفة الكلية"], "القيمة": [cargo_type, f"{wght} كغ", f"{dist} كم", f"{travel_hours:.1f} ساعة", f"{total:,.2f} د.ج"]}
-            st.table(pd.DataFrame(report_data))
+        # التقييم بـ 5 نجوم
+        st.subheader("⭐ تقييم دقة التنبؤ")
+        st.feedback("stars")
 
     st.markdown(f"""
         <div style="text-align:center; color:#d4af37; font-weight:bold; margin-top:20px; border-top:1px solid #d4af37; padding-top:20px;">
