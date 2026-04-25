@@ -8,47 +8,55 @@ st.set_page_config(
     layout="wide"
 )
 
-# إدارة التنقل
+# إدارة التنقل بين الصفحات
 if 'page' not in st.session_state:
     st.session_state.page = 'welcome'
 
 def go_to_main(): st.session_state.page = 'main'
 def go_to_welcome(): st.session_state.page = 'welcome'
 
-wilayas_names = ["01. أدرار", "02. الشلف", "03. الأغواط", "04. أم البواقي", "05. باتنة", "06. بجاية", "07. بسكرة", "08. بشار", "09. البليدة", "10. البويرة", "11. تمنراست", "12. تبسة", "13. تلمسان", "14. تيارت", "15. تيزي وزو", "16. الجزائر", "17. جلفة", "18. جيجل", "19. سطيف", "20. سعيدة", "21. سكيكدة", "22. سيدي بلعباس", "23. عنابة", "24. قالمة", "25. قسنطينة", "26. المدية", "27. مستغانم", "28. المسيلة", "29. معسكر", "30. ورقلة", "31. وهران", "32. البيض", "33. إليزي", "34. برج بوعريريج", "35. بومرداس", "36. الطارف", "37. تندوف", "38. تيسمسيلت", "39. الوادي", "40. خنشلة", "41. سوق أهراس", "42. تيبازة", "43. ميلة", "44. عين الدفلى", "45. النعامة", "46. عين تموشنت", "47. غرداية", "48. غليزان", "49. تيميمون", "50. برج باجي مختار", "51. أولاد جلال", "52. بني عباس", "53. عين صالح", "54. عين قزام", "55. تقرت", "56. جانت", "57. المغير", "58. المنيعة"]
+# قائمة الولايات الـ 58
+wilayas_names = [
+    "01. أدرار", "02. الشلف", "03. الأغواط", "04. أم البواقي", "05. باتنة", 
+    "06. بجاية", "07. بسكرة", "08. بشار", "09. البليدة", "10. البويرة", 
+    "11. تمنراست", "12. تبسة", "13. تلمسان", "14. تيارت", "15. تيزي وزو", 
+    "16. الجزائر", "17. جلفة", "18. جيجل", "19. سطيف", "20. سعيدة", 
+    "21. سكيكدة", "22. سيدي بلعباس", "23. عنابة", "24. قالمة", "25. قسنطينة", 
+    "26. المدية", "27. مستغانم", "28. المسيلة", "29. معسكر", "30. ورقلة", 
+    "31. وهران", "32. البيض", "33. إليزي", "34. برج بوعريريج", "35. بومرداس", 
+    "36. الطارف", "37. تندوف", "38. تيسمسيلت", "39. الوادي", "40. خنشلة", 
+    "41. سوق أهراس", "42. تيبازة", "43. ميلة", "44. عين الدفلى", "45. النعامة", 
+    "46. عين تموشنت", "47. غرداية", "48. غليزان", "49. تيميمون", "50. برج باجي مختار", 
+    "51. أولاد جلال", "52. بني عباس", "53. عين صالح", "54. عين قزام", "55. تقرت", 
+    "56. جانت", "57. المغير", "58. المنيعة"
+]
 
-# --- كود CSS لإجبار الخلفية على الظهور بنسبة 100% ---
-def set_bg_image(url):
-    st.markdown(f"""
-        <style>
-        .stApp {{
-            background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url("{url}");
-            background-size: cover !important;
-            background-position: center !important;
-            background-attachment: fixed !important;
-        }}
-        div[data-testid="stVerticalBlock"] > div[style*="background-color"] {{
-            background-color: rgba(0, 0, 0, 0.9) !important;
-            border: 2px solid #d4af37 !important;
-            border-radius: 15px; padding: 25px;
-        }}
-        .stApp, .stMarkdown, p, label {{ color: #FFFFFF !important; font-size: 20px !important; }}
-        .result-card {{
-            background: linear-gradient(45deg, #d4af37, #f4cf67);
-            padding: 35px; border-radius: 20px; text-align: center;
-            border: 2px solid #ffffff; margin-bottom: 25px;
-        }}
-        .result-card h1, .result-card h2, .result-card h3 {{ color: #000000 !important; font-weight: bold !important; }}
-        .stTable {{ background-color: rgba(0, 0, 0, 0.85) !important; border: 2px solid #d4af37 !important; border-radius: 12px; }}
-        th {{ color: #d4af37 !important; font-size: 20px !important; }}
-        .main-card {{ background: rgba(0, 0, 0, 0.85); padding: 25px; border-radius: 15px; border-right: 5px solid #d4af37; margin-bottom: 20px; }}
-        </style>
-    """, unsafe_allow_html=True)
+# --- كود CSS التنسيقي ---
+st.markdown("""
+    <style>
+    div[data-testid="stVerticalBlock"] > div[style*="background-color"] {
+        background-color: rgba(0, 0, 0, 0.95) !important;
+        border: 2px solid #d4af37 !important;
+        border-radius: 15px;
+        padding: 25px;
+    }
+    .stApp, .stMarkdown, p, label { color: #FFFFFF !important; font-size: 20px !important; }
+    .result-card {
+        background: linear-gradient(45deg, #d4af37, #f4cf67);
+        padding: 35px; border-radius: 20px; text-align: center;
+        border: 2px solid #ffffff; margin-bottom: 25px;
+    }
+    .result-card h1, .result-card h2, .result-card h3 { color: #000000 !important; font-weight: bold !important; }
+    .stTable { background-color: rgba(0, 0, 0, 0.85) !important; border: 2px solid #d4af37 !important; border-radius: 12px; }
+    th { color: #d4af37 !important; font-size: 20px !important; }
+    .main-card { background: rgba(0, 0, 0, 0.8); padding: 25px; border-radius: 15px; border-right: 5px solid #d4af37; margin-bottom: 20px; }
+    </style>
+""", unsafe_allow_html=True)
 
-# --- الصفحة الأولى ---
+# --- الصفحة الأولى: الواجهة الترحيبية ---
 if st.session_state.page == 'welcome':
-    # رابط صورة سفينة لوجستية جديد ومجرب
-    set_bg_image("https://cdn.pixabay.com/photo/2017/08/10/01/22/ship-2617701_1280.jpg")
+    # خلفية سفينة شحن لوجستية واضحة وممتازة
+    st.markdown("""<style>.stApp { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1494412651409-8963ce7935a7?q=80&w=1500"); background-size: cover; background-position: center; }</style>""", unsafe_allow_html=True)
     st.markdown("""
         <div style="text-align:center; margin-top:50px; padding:40px; background:rgba(0,0,0,0.85); border:3px solid #d4af37; border-radius:30px;">
             <h1 style="color:#d4af37; font-size:40px;">مرحباً بكم طلبة تخصص اللوجستيك والنقل الدولي 🎓</h1>
@@ -71,10 +79,10 @@ if st.session_state.page == 'welcome':
     if st.button("🚀 الدخول إلى منصة التحليل"):
         go_to_main(); st.rerun()
 
-# --- الصفحة الثانية ---
+# --- الصفحة الثانية: منصة التحليل ---
 elif st.session_state.page == 'main':
-    # خلفية مستودع لوجستي احترافية
-    set_bg_image("https://cdn.pixabay.com/photo/2020/07/21/16/09/logistics-5426702_1280.jpg")
+    # خلفية مستودع لوجستي للموثوقية
+    st.markdown("""<style>.stApp { background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url("https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=1500"); background-size: cover; }</style>""", unsafe_allow_html=True)
     
     if st.button("⬅️ رجوع"): go_to_welcome(); st.rerun()
 
@@ -86,6 +94,7 @@ elif st.session_state.page == 'main':
         st.markdown("### 📍 تفاصيل المسار")
         start = st.selectbox("🚩 نقطة الانطلاق", wilayas_names, index=6)
         end = st.selectbox("🏁 نقطة الوصول", wilayas_names, index=15)
+        # إدخال يدوي (بدون حساب أوتوماتيكي) لضمان الاستقرار
         dist = st.number_input("📏 المسافة (كم)", value=500.0)
         st.markdown("</div>", unsafe_allow_html=True)
     with c2:
@@ -106,13 +115,28 @@ elif st.session_state.page == 'main':
         travel_hours = (dist / spec["speed"]) + (dist // 300)
 
         st.markdown(f'<div class="result-card"><h3>التكلفة المقدرة للرحلة</h3><h1>{total:,.2f} د.ج</h1><h2>🕒 الوقت المتوقع: {travel_hours:.1f} ساعة</h2></div>', unsafe_allow_html=True)
+
+        st.markdown("### 📋 التقرير التفصيلي للتكاليف")
         st.table(pd.DataFrame({"البند": ["⛽ الوقود", "🔧 الصيانة", "🏗️ التشغيل", "📈 الربح المتوقع"], "القيمة (د.ج)": [f"{fuel_c:,.2f}", f"{(base*0.12):,.2f}", f"{base:,.2f}", f"{(total*0.2):,.2f}"]}))
-        
+
+        comparison = []
+        for name, s in truck_specs.items():
+            cost = (((dist * 0.8) + ((wght/1000) * 400)) * s["factor"] + (dist/5)*fuel) * 1.32
+            status = "✅ مناسب" if wght <= s["cap"] else "❌ حمولة زائدة"
+            comparison.append({"الوسيلة": name, "الحالة": status, "التكلفة التقديرية": f"{cost:,.2f}"})
+
+        st.markdown("### 🔄 تحليل البدائل (جدول المقارنة)")
+        st.table(pd.DataFrame(comparison))
+
+        # التقييم بـ 5 نجوم
+        st.write("---")
         st.subheader("⭐ تقييم دقة التنبؤ")
         st.feedback("stars")
 
     st.markdown(f"""
         <div style="text-align:center; color:#d4af37; font-weight:bold; margin-top:20px; border-top:1px solid #d4af37; padding-top:20px;">
-            من إعداد طلبة أولى ماستر لوجستيك ونقل دولي | جامعة بسكرة 2026
+            من إعداد طلبة أولى ماستر لوجستيك ونقل دولي: <br>
+            <span style="color:white; font-size:22px;">سهيل عطالي | محمد الحسين موسي | عبد الله سايب</span> <br>
+            جامعة محمد خيضر بسكرة - كلية العلوم الاقتصادية - دفعة 2026
         </div>
     """, unsafe_allow_html=True)
