@@ -1,4 +1,4 @@
-فاهstreamlit
+streamlit
 pandas
 geopy
 
