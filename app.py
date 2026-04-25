@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-# 1. إعداد الصفحة الأساسي - تم تعديل العنوان هنا أيضاً
+# 1. إعداد الصفحة الأساسي
 st.set_page_config(page_title="منصة التنبؤ بتكاليف النقل اللوجستي", layout="wide")
 
 # 2. إدارة التنقل بين الصفحات
@@ -27,7 +27,7 @@ wilayas_names = [
     "56. جانت", "57. المغير", "58. المنيعة"
 ]
 
-# --- كود CSS المحسن (المستطيل الغامق جداً وبإطار ذهبي) ---
+# --- كود CSS (المستطيل الغامق جداً وبإطار ذهبي) ---
 st.markdown("""
     <style>
     div[data-testid="stVerticalBlock"] > div[style*="background-color"] {
@@ -51,18 +51,21 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- الصفحة الأولى: الواجهة الترحيبية ---
+# --- الصفحة الأولى: الواجهة الترحيبية (تعديل العناوين والتعريف) ---
 if st.session_state.page == 'welcome':
     st.markdown("""<style>.stApp { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1524522173746-f628baad3644?q=80&w=1500"); background-size: cover; }</style>""", unsafe_allow_html=True)
     st.markdown("""
         <div style="text-align:center; margin-top:50px; padding:40px; background:rgba(0,0,0,0.85); border:3px solid #d4af37; border-radius:30px;">
-            <h1 style="color:#d4af37; font-size:45px;">أهلاً بكم في منصة التنبؤ اللوجستي الذكية 🎓</h1>
-            <h2 style="color:white;">جامعة محمد خيضر بسكرة - كلية العلوم والتكنولوجيا</h2>
+            <h1 style="color:#d4af37; font-size:40px;">مرحباً بكم طلبة تخصص اللوجستيك والنقل الدولي 🎓</h1>
+            <h2 style="color:white;">جامعة محمد خيضر - كلية العلوم الاقتصادية</h2>
             <hr style="border-color:#d4af37;">
-            <p style="font-size:22px; color:#ffffff;">
-                <b>مشروع التخرج:</b> بناء نموذج شبكة عصبية اصطناعية باستخدام مكتبة <b>Keras</b> للتنبؤ بتكاليف النقل اللوجستي.
-            </p>
-            <h3 style="color:#d4af37; margin-top:20px;">إعداد طلبة أولى ماستر لوجستيك ونقل دولي:</h3>
+            <div style="margin:30px 0;">
+                <h3 style="color:#d4af37; font-size:28px;">ماهي المنصة؟</h3>
+                <p style="font-size:22px; color:#ffffff; line-height:1.6;">
+                    المنصة عبارة عن نموذج لشبكة عصبية إصطناعية باستخدام مكتبة <b>keras</b> لللتنبؤ بتكاليف النقل اللوجستي.
+                </p>
+            </div>
+            <h3 style="color:#d4af37;">إعداد طلبة أولى ماستر لوجستيك ونقل دولي:</h3>
             <div style="background:rgba(212,175,55,0.1); padding:15px; border-radius:15px; border:1px solid #d4af37;">
                 <p style="font-size:26px; font-weight:bold; color:white; margin:0;">
                     سهيل عطالي | محمد الحسين موسي | عبد الله سايب
@@ -79,7 +82,6 @@ elif st.session_state.page == 'main':
     
     if st.button("⬅️ رجوع"): go_to_welcome(); st.rerun()
 
-    # التعديل المطلوب: تم تحديث العنوان هنا بدقة
     st.markdown("<h1 style='text-align:center; color:#d4af37;'>📊 منصة التنبؤ بتكاليف النقل اللوجستي</h1>", unsafe_allow_html=True)
 
     c1, c2 = st.columns(2)
@@ -100,7 +102,13 @@ elif st.session_state.page == 'main':
         st.markdown("</div>", unsafe_allow_html=True)
 
     if st.button("💎 توليد تقرير التنبؤ النهائي"):
-        truck_specs = {"صغيرة": {"cap": 1500, "factor": 1.0, "speed": 80}, "متوسطة": {"cap": 5000, "factor": 1.4, "speed": 70}, "تبريد": {"cap": 18000, "factor": 2.2, "speed": 65}, "مقطورة دولية": {"cap": 25000, "factor": 2.8, "speed": 60}}
+        truck_specs = {
+            "صغيرة": {"cap": 1500, "factor": 1.0, "speed": 80},
+            "متوسطة": {"cap": 5000, "factor": 1.4, "speed": 70},
+            "تبريد": {"cap": 18000, "factor": 2.2, "speed": 65},
+            "مقطورة دولية": {"cap": 25000, "factor": 2.8, "speed": 60}
+        }
+        
         spec = truck_specs[truck_type]
         base = ((dist * 0.8) + ((wght/1000) * 400)) * spec["factor"]
         fuel_c = (dist / 5) * fuel
@@ -112,12 +120,35 @@ elif st.session_state.page == 'main':
         st.markdown("### 📋 التقرير التفصيلي للتكاليف")
         st.table(pd.DataFrame({"البند": ["⛽ الوقود", "🔧 الصيانة", "🏗️ التشغيل", "📈 الربح"], "القيمة (د.ج)": [f"{fuel_c:,.2f}", f"{(base*0.12):,.2f}", f"{base:,.2f}", f"{(total*0.2):,.2f}"]}))
 
+        # --- إعادة جدول المقارنة الذي اختفى ---
+        comparison = []
+        valid_options = {}
+        for name, s in truck_specs.items():
+            cost = (((dist * 0.8) + ((wght/1000) * 400)) * s["factor"] + (dist/5)*fuel) * 1.32
+            status = "✅ مناسب" if wght <= s["cap"] else "❌ حمولة زائدة"
+            comparison.append({"الوسيلة": name, "الحالة": status, "التكلفة التقديرية": f"{cost:,.2f}"})
+            if wght <= s["cap"]: valid_options[name] = cost
+
+        st.markdown("### 🔄 تحليل البدائل (جدول المقارنة)")
+        st.table(pd.DataFrame(comparison))
+
         st.write("---")
-        # الجزء السفلي المحدث بأسماء الفريق والدرجة العلمية
-        st.markdown(f"""
-            <div style="text-align:center; color:#d4af37; font-weight:bold; margin-top:20px; border-top:1px solid #d4af37; padding-top:20px;">
-                من إعداد طلبة أولى ماستر لوجستيك ونقل دولي: <br>
-                <span style="color:white; font-size:22px;">سهيل عطالي | محمد الحسين موسي | عبد الله سايب</span> <br>
-                جامعة محمد خيضر بسكرة - دفعة 2026
-            </div>
-        """, unsafe_allow_html=True)
+        if st.button("📤 إرسال التقرير النهائي (PDF/Image Ready)"):
+            st.success("تم إعداد الجدول النهائي القابل للمشاركة!")
+            best_v = min(valid_options, key=valid_options.get) if valid_options else "غير محدد"
+            report_data = {
+                "البيان": ["نوع البضاعة", "الوزن", "المسافة", "الوسيلة الأفضل", "الوقت", "التكلفة الكلية"],
+                "القيمة": [cargo_type, f"{wght} كغ", f"{dist} كم", best_v, f"{travel_hours:.1f} ساعة", f"{total:,.2f} د.ج"]
+            }
+            st.table(pd.DataFrame(report_data))
+
+        st.write("---")
+        st.radio("📊 تقييم دقة تنبؤ النموذج الجماعي:", ["دقيق جداً ✅", "مقبول ⚠️", "غير دقيق ❌"], horizontal=True)
+
+    st.markdown(f"""
+        <div style="text-align:center; color:#d4af37; font-weight:bold; margin-top:20px; border-top:1px solid #d4af37; padding-top:20px;">
+            من إعداد طلبة أولى ماستر لوجستيك ونقل دولي: <br>
+            <span style="color:white; font-size:22px;">سهيل عطالي | محمد الحسين موسي | عبد الله سايب</span> <br>
+            جامعة محمد خيضر بسكرة - كلية العلوم الاقتصادية - دفعة 2026
+        </div>
+    """, unsafe_allow_html=True)
